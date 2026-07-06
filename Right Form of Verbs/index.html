@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Workbook Engine — 80 Sets</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #16a34a;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --border: #cbd5e1;
+            --highlight: #dc2626;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            margin: 0 0 5px 0;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .navigation-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        select, button {
+            padding: 10px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        select { font-weight: 600; }
+        button { background: var(--primary); color: white; border: none; font-weight: 600; }
+        button:hover { background: var(--primary-hover); }
+        button:disabled { background: var(--border); cursor: not-allowed; }
+
+        .score-board {
+            background: var(--light);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px dashed var(--border);
+        }
+
+        .passage-card {
+            line-height: 2.3;
+            font-size: 17px;
+            letter-spacing: 0.3px;
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+
+        .input-gap {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            margin: 0 6px;
+        }
+
+        .gap-field {
+            width: 130px;
+            padding: 4px 8px;
+            font-size: 15px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .gap-field:focus { outline: 2px solid var(--primary); }
+        .gap-label { font-size: 11px; color: #64748b; text-align: center; margin-top: 2px; font-weight: bold; }
+        .action-zone { display: flex; gap: 15px; margin-top: 20px; }
+
+        .result-view {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            display: none;
+        }
+
+        .result-view h3 { margin-top: 0; color: var(--success); }
+        .corrected-text { line-height: 2.3; font-size: 17px; }
+        .ans-highlight { color: var(--highlight); font-weight: bold; text-decoration: underline; padding: 0 2px; }
+        .keyboard-hint { margin-top: 15px; font-size: 12px; color: #94a3b8; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Practice Sheet on Right Form of Verbs</h1>
+        <h2>Prepared By Luran Meahda Ramiz Rafin</h2>
+    </header>
+
+    <div class="navigation-controls">
+        <button id="prevBtn" onclick="navigate(-1)">← Previous</button>
+        <select id="questionDropdown" onchange="jumpToQuestion(this.value)"></select>
+        <button id="nextBtn" onclick="navigate(1)">Next →</button>
+        <div class="score-board" id="scoreBoard">Score: -- / 5.0</div>
+    </div>
+
+    <div class="passage-card" id="interactivePassage"></div>
+
+    <div class="action-zone">
+        <button style="background-color: var(--success);" onclick="evaluateAnswers()">Submit & Check Answers</button>
+        <button style="background-color: #64748b;" onclick="resetCurrentAnswers()">Clear</button>
+    </div>
+
+    <div class="result-view" id="resultView">
+        <h3>Evaluation & Answer Key View</h3>
+        <p id="marksSummary"></p>
+        <div class="corrected-text" id="solutionPassage"></div>
+    </div>
+
+</div>
+
+<!-- Load external database dynamically -->
+<script src="questions.js"></script>
+
+<script>
+    let currentQuestion = 1;
+    const userAnswersStorage = {}; 
+
+    function init() {
+        const dropdown = document.getElementById('questionDropdown');
+        for (let i = 1; i <= 80; i++) {
+            let opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `Question Set ${i}`;
+            dropdown.appendChild(opt);
+        }
+        loadQuestion(currentQuestion);
+        setupGlobalKeyboardNav();
+    }
+
+    function loadQuestion(num) {
+        currentQuestion = num;
+        document.getElementById('questionDropdown').value = num;
+        document.getElementById('prevBtn').disabled = (num === 1);
+        document.getElementById('nextBtn').disabled = (num === 80);
+        document.getElementById('resultView').style.display = 'none';
+        document.getElementById('scoreBoard').textContent = "Score: -- / 5.0";
+
+        let rawText = passagesData[num] || passagesData.defaultText(num);
+        let computedHTML = rawText;
+        const labels = ['a','b','c','d','e','f','g','h','i','j'];
+        
+        labels.forEach((label, idx) => {
+            const regex = new RegExp(`\\[${label}\\]\\s*\\(([^)]+)\\)`);
+            const savedValue = (userAnswersStorage[currentQuestion] && userAnswersStorage[currentQuestion][idx]) ? userAnswersStorage[currentQuestion][idx] : '';
+            
+            let replacer = `
+                <span class="input-gap">
+                    <input type="text" class="gap-field" data-index="${idx}" id="gap-${label}" value="${savedValue}" autocomplete="off">
+                    <span class="gap-label">(${label}) $1</span>
+                </span>
+            `;
+            computedHTML = computedHTML.replace(regex, replacer);
+        });
+
+        document.getElementById('interactivePassage').innerHTML = computedHTML;
+        saveInputsStateTracker();
+    }
+
+    function saveInputsStateTracker() {
+        const fields = document.querySelectorAll('.gap-field');
+        fields.forEach(field => {
+            field.addEventListener('input', () => {
+                if (!userAnswersStorage[currentQuestion]) userAnswersStorage[currentQuestion] = {};
+                userAnswersStorage[currentQuestion][field.dataset.index] = field.value.trim();
+            });
+        });
+    }
+
+    function setupGlobalKeyboardNav() {
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+                const active = document.activeElement;
+                if (active && active.classList.contains('gap-field')) {
+                    let currentIdx = parseInt(active.dataset.index);
+                    let targetIdx = (e.key === "ArrowRight") ? currentIdx + 1 : currentIdx - 1;
+                    let targetInput = document.querySelector(`.gap-field[data-index="${targetIdx}"]`);
+                    if (targetInput) {
+                        e.preventDefault();
+                        targetInput.focus();
+                        targetInput.select();
+                    }
+                }
+            }
+        });
+    }
+
+    function navigate(direction) {
+        let target = currentQuestion + direction;
+        if (target >= 1 && target <= 80) jumpToQuestion(target);
+    }
+
+    function jumpToQuestion(num) {
+        loadQuestion(parseInt(num));
+    }
+
+    function resetCurrentAnswers() {
+        userAnswersStorage[currentQuestion] = {};
+        loadQuestion(currentQuestion);
+    }
+
+    function evaluateAnswers() {
+        const answers = officialAnswers[currentQuestion];
+        if(!answers) return alert("Answer spectrum key missing for this specific block.");
+        let correctCount = 0;
+        
+        for (let i = 0; i < 10; i++) {
+            let val = (userAnswersStorage[currentQuestion] && userAnswersStorage[currentQuestion][i]) ? userAnswersStorage[currentQuestion][i].toLowerCase() : "";
+            let correctAlts = answers[i].toLowerCase().split('/');
+            
+            if (correctAlts.some(alt => alt.trim() === val)) {
+                correctCount++;
+            }
+        }
+
+        let marks = correctCount * 0.5;
+        document.getElementById('scoreBoard').textContent = `Score: ${marks.toFixed(1)} / 5.0`;
+        
+        let rawText = passagesData[currentQuestion] || passagesData.defaultText(currentQuestion);
+        let labels = ['a','b','c','d','e','f','g','h','i','j'];
+        
+        labels.forEach((label, idx) => {
+            const regex = new RegExp(`\\[${label}\\]\\s*\\(([^)]+)\\)`);
+            let finalAnsText = answers[idx];
+            computedHTML = rawText.replace(regex, `<span class="ans-highlight">${finalAnsText}</span>`);
+            rawText = computedHTML;
+        });
+
+        document.getElementById('marksSummary').innerHTML = `You answered <b>${correctCount} out of 10</b> correctly. Score achieved: <b>${marks.toFixed(1)} / 5.0</b>`;
+        document.getElementById('solutionPassage').innerHTML = rawText;
+        document.getElementById('resultView').style.display = 'block';
+        document.getElementById('resultView').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

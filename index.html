@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HSC English 2nd Paper Practice Book</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#1d3557,#457b9d,#a8dadc);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:700px;
+    background:white;
+    border-radius:25px;
+    padding:45px;
+    text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+h1{
+    color:#1d3557;
+    font-size:2rem;
+    margin-bottom:15px;
+}
+
+p{
+    color:#666;
+    margin-bottom:40px;
+}
+
+.buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.btn{
+    text-decoration:none;
+    color:white;
+    padding:22px;
+    border-radius:15px;
+    font-size:18px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 25px rgba(0,0,0,.25);
+}
+
+.connectors{
+    background:#3b82f6;
+}
+
+.modifiers{
+    background:#10b981;
+}
+
+.rfv{
+    background:#f59e0b;
+}
+
+.transform{
+    background:#ef4444;
+}
+
+footer{
+    margin-top:35px;
+    color:#888;
+    font-size:14px;
+}
+
+@media(max-width:650px){
+
+.buttons{
+    grid-template-columns:1fr;
+}
+
+h1{
+    font-size:1.7rem;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>HSC English 2nd Paper Practice Book</h1>
+
+<p>Select a topic to start practicing.</p>
+
+<div class="buttons">
+
+<a class="btn connectors" href="Connector/index.html">
+Connectors
+</a>
+
+<a class="btn modifiers" href="Modifier/index.html">
+Modifiers
+</a>
+
+<a class="btn rfv" href="Right Form of Verbs/index.html">
+Right Form of Verbs
+</a>
+
+<a class="btn transform" href="Transformation Sentences/index.html">
+Transformation Sentence
+</a>
+
+</div>
+
+<footer>
+Made for HSC English Practice
+</footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gap Filling with Modifiers Practice</title>
+    <style>
+        :root {
+            --primary: #2b6cb0;
+            --primary-hover: #1e4e8c;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --border: #e2e8f0;
+            --correct-color: #2f855a;
+            --wrong-color: #c53030;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding: 20px; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 820px; width: 100%; background: var(--card-bg); padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px; }
+        h2 { text-align: center; color: var(--primary); margin-top: 0; }
+        .meta-info { text-align: center; font-size: 0.9rem; color: #718096; margin-bottom: 25px; line-height: 1.4; border-bottom: 2px dashed var(--border); padding-bottom: 15px; }
+        
+        .nav-controls { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 25px; background: #edf2f7; padding: 10px; border-radius: 6px; }
+        select { padding: 8px 12px; font-size: 0.95rem; border-radius: 4px; border: 1px solid var(--border); max-width: 50%; }
+        button { background-color: var(--primary); color: white; border: none; padding: 10px 20px; font-size: 0.95rem; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { background-color: #cbd5e0; cursor: not-allowed; }
+        
+        .passage { line-height: 2.3; font-size: 1.15rem; text-align: justify; margin-bottom: 30px; }
+        .gap-container { display: inline-block; position: relative; margin: 0 4px; line-height: 1.2; vertical-align: baseline; }
+        .gap-input { width: 130px; border: none; border-bottom: 2px solid var(--primary); padding: 2px 2px; font-size: 1.05rem; font-weight: bold; color: #2d3748; text-align: center; outline: none; transition: border-color 0.2s; background: transparent; }
+        .gap-input:focus { border-bottom-color: #e53e3e; background-color: #fffaf0; }
+        .gap-label { font-size: 0.8rem; color: #4a5568; font-weight: normal; display: block; text-align: center; margin-top: -2px; font-style: italic; color: #4a5568; }
+        
+        .action-zone { display: flex; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .evaluate-btn { background-color: #38a169; }
+        .evaluate-btn:hover { background-color: #2f855a; }
+
+        .corrected-ans { font-weight: bold; color: var(--correct-color); border-bottom: 2px solid var(--correct-color); background: #f0fff4; padding: 0 4px; border-radius: 3px; display: inline-block; }
+        .wrong-ans { font-weight: bold; color: var(--wrong-color); text-decoration: line-through; margin-right: 4px; }
+        
+        .score-board { background: #ebf8ff; border: 2px solid #bee3f8; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+        .score-text { font-size: 1.2rem; font-weight: bold; color: #2b6cb0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Practice Sheet on Modifier - HSC</h2>
+    <div class="meta-info">
+        <strong>Made By Luran Meahda Ramiz Rafin</strong>
+    </div>
+
+    <div class="nav-controls">
+        <button id="prevBtn" onclick="navigate(-1)">← Previous</button>
+        <select id="jumpSelect" onchange="jumpToQuestion(this.value)"></select>
+        <button id="nextBtn" onclick="navigate(1)">Next →</button>
+    </div>
+
+    <div id="questionWrapper">
+        <div id="questionContainer"></div>
+        <div id="scoreBoard" class="score-board" style="display: none;"></div>
+    </div>
+
+    <div class="action-zone">
+        <button class="evaluate-btn" id="evaluateActionBtn" onclick="evaluateCurrentQuestion()">Evaluate This Question</button>
+        <button style="background-color: #718096;" id="resetBtn" onclick="resetCurrentQuestion()">Reset Answers</button>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        {
+            id: 1,
+            passage: "Once there lived a [a] fox in a jungle. One day, while he was walking [b], he fell into a trap and lost his tail. He felt very unhappy and sad. But the fox was [c] cunning too. He hit upon a plan and invited all the foxes [d]. When all the foxes arrived, the fox, [e], said, \"My dear friends, I have discovered a new thing. It is that [f] tails are quite useless. They look [g] ugly and dirty too. So, we all should cut off our tails, shouldn't we?\" Most of them agreed with the cunning fox [h] their tails. But an old and [i] fox said to the cunning fox, \"My friend, your plan is nice but evil. Actually you want to cut off our tails because you have lost [j] tail of your own.\"",
+            hints: {
+                a: "pre-modify the noun", b: "post-modify the verb with a prepositional phrase", c: "pre-modify the adjective",
+                d: "use an infinitive phrase", e: "use an appositive", f: "use a possessive to pre-modify the noun",
+                g: "pre-modify the adjective", h: "post-modify the verb with an infinitive", i: "pre-modify the noun",
+                j: "pre-modify the noun with a determiner"
+            },
+            answers: {
+                a: ["clever", "cunning"], b: ["through the jungle", "in the jungle"], c: ["very"], d: ["to come to a meeting", "to join him"],
+                e: ["an evil planner", "having no tail"], f: ["our"], g: ["very"], h: ["to cut off"], i: ["wise"], j: ["the"]
+            }
+        },
+        {
+            id: 2,
+            passage: "A library is a [a] house of knowledge. The students [b] in all classes visit it in their leisure period. Usually a college library is housed in two rooms. [c] almirahs are placed in one room. The other room is the [d] room where magazines, journals and newspapers are placed. Hundreds of books are arranged [e]. So, any type of book can be traced in no time. The books cater to the needs and interests [f]. Generally there are two separate sections in the library. One of them contains reference books like [g] etc. The other section contains books [h]. Every student has a [i] card. The reading room is always crowded [j] in the afternoon.",
+            hints: {
+                a: "pre-modify the noun", b: "use a participle", c: "pre-modify the noun", d: "use a participle to modify the noun",
+                e: "post-modify the verb", f: "use a prepositional phrase", g: "use nouns", h: "use a prepositional phrase",
+                i: "use a noun-adjective to modify noun", j: "post-modify the verb"
+            },
+            answers: {
+                a: ["store"], b: ["attending", "reading"], c: ["some", "many", "several"], d: ["reading"], e: ["systematically", "alphabetically"],
+                f: ["of the students and teachers"], g: ["dictionaries, encyclopedias, bibliographies", "dictionaries"],
+                h: ["of different subjects", "of varied interests"], i: ["library"], j: ["especially", "particularly"]
+            }
+        },
+        {
+            id: 3,
+            passage: "Trees, [a], are essential for maintaining ecosystem. Without trees, the balance of ecosystem will be [b] lost. Trees provide us with [c] elements without which we cannot live on this earth. It is a matter of [d] concern that we are cutting trees [e]. As a dire consequence, the global temperature is rising [f]. The existence of flora and fauna is at an [g] risk. Polar ice caps are melting and [h] level is rising. [i], we can avoid such a catastrophe. If we want to keep our [j] earth safe and sound, we have to plant trees and protect our forests.",
+            hints: {
+                a: "use an appositive", b: "post-modify the verb", c: "pre-modify the noun", d: "pre-modify the noun",
+                e: "post-modify the verb", f: "post-modify the verb", g: "use a pre-modifier", h: "use a noun-adjective",
+                i: "use a present participle phrase", j: "use a noun-adjective"
+            },
+            answers: {
+                a: ["the lungs of the earth", "our best friend"], b: ["greatly", "irreparably", "virtually"], c: ["essential", "important"],
+                d: ["great"], e: ["indiscriminately"], f: ["gradually", "alarmingly", "rapidly"],
+                g: ["immeasurable", "unimaginable", "inevitably"], h: ["sea", "water"], i: ["being aware of this", "planting more trees"], j: ["mother", "dream"]
+            }
+        },
+        {
+            id: 4,
+            passage: "Rainy season is the proper time for [a] plantation. It is the time when [b] environment is the most suitable one for the [c] growth of trees. We should plant trees according to [d] suitability of the land. There are [e] fallow lands around us. We can plant saplings on [f] lands. Sea-beaches, low-lying areas, roadsides, etc. can be brought under the scheme of tree plantation. We can easily engage landless people [g] the saplings and ensure their safe growth. The success of tree plantation programme requires [h] united effort. The Government, the NGOs and the educated section of the society should work [i] in this regard. Everybody should come forward spontaneously to contribute to [j] noble campaign.",
+            hints: {
+                a: "use a noun-adjective to pre-modify the noun", b: "use article to pre-modify the noun", c: "use an adjective to pre-modify the noun",
+                d: "use possessive to pre-modify the noun", e: "use quantifier to pre-modify the noun", f: "use a demonstrative",
+                g: "use an Infinitive phrase to post-modify the verb", h: "use article to pre-modify the noun phrase",
+                i: "post-modify the verb with adverbial", j: "use a demonstrative to pre-modify the noun phrase"
+            },
+            answers: {
+                a: ["tree"], b: ["the"], c: ["quick", "sound", "proper"], d: ["their"], e: ["many"], f: ["these"],
+                g: ["to plant", "to take care of"], h: ["a"], i: ["together", "unitedly", "in a body"], j: ["this"]
+            }
+        },
+        {
+            id: 5,
+            passage: "Man has [a] inborn curiosity to know the unknown and [b]. He likes to see new places and wants to know about [c] nations, their cultures, manners and religions. Bookish knowledge is [d]. In order to have practical knowledge one has to go for travelling. [e] people had to suffer much for travelling as they did not have [f] transports. Nowadays, travelling has become much easier and comfortable for the invention of aeroplane, buses, ships, speedy trains, etc. Travelling plays a [g] important role in acquiring knowledge. So, the students go for [h] tour which also helps to remove [i] boredom of study. In fact, everyone should travel to develop practical knowledge which cannot be acquired by sitting [j].",
+            hints: {
+                a: "use determiner to pre-modify the noun phrase", b: "use an infinitive phrase", c: "pre-modify the noun",
+                d: "use adjective phrase", e: "use an adverbial phrase", f: "pre-modify the noun", g: "use an intensifier to pre-modify the adjective",
+                h: "pre-modify the noun with a noun-adjective", i: "pre-modify the noun with a possessive", j: "post-modify the verb"
+            },
+            answers: {
+                a: ["an"], b: ["to see the unseen"], c: ["other", "various", "different"], d: ["not enough", "not all"],
+                e: ["in the past", "in ancient time"], f: ["suitable", "convenient", "fast", "speedy", "modern"],
+                g: ["very"], h: ["study"], i: ["their"], j: ["at reading room", "in the classroom", "idly", "lazily"]
+            }
+        },
+        {
+            id: 6,
+            passage: "Long ago, there was an [a] king in England. He was tired of ruling and needed rest. He had [b] daughters Goneril, Regan and Cordelia. He made up his mind [c] among his daughters. But, at first, he wanted [d] how much they loved him. Firstly, the king asked his [e] daughter how much she loved him. Goneril declared that she loved him [f] than she could say. Lear, the king, was [g] satisfied. He gave her one-third of the kingdom. Then he asked his [h] daughter Regan. She replied that her love for him would never change. She was able [i] him. So, the king gave another-third of his kingdom. Then it was the turn of Cordelia, the [j] daughter of the king.",
+            hints: {
+                a: "pre-modify the noun", b: "pre-modify the noun", c: "post-modify the verb with an infinitive phrase",
+                d: "post-modify the verb with an infinitive phrase", e: "pre-modify the noun", f: "use an intensifier to post-modify the verb",
+                g: "pre-modify the adjective", h: "pre-modify the noun", i: "post-modify the adjective with an infinitive", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["old", "aged"], b: ["three"], c: ["to divide his kingdom"], d: ["to know", "to test"], e: ["eldest"], f: ["more"],
+                g: ["very", "highly"], h: ["second"], i: ["to satisfy"], j: ["youngest", "dearest"]
+            }
+        },
+        {
+            id: 7,
+            passage: "Books are [a] essential for us. They help us [b] knowledge. [c] books, we can know everything. They show us the [d] way. Books can be our [e] friends. They help us [f] our mind. They improve our [g] 'power'. They give us solace to our [h] mind. Besides, reading [i] books, students should read other books. If they read other books, they will be able to know everything [j].",
+            hints: {
+                a: "use intensifier", b: "post-modify the verb with an infinitive", c: "pre-modify the noun with present participle",
+                d: "pre-modify the noun", e: "pre-modify the noun", f: "post-modify the verb with infinitive", g: "pre-modify the noun",
+                h: "pre-modify the noun", i: "pre-modify the noun", j: "post-modify the verb"
+            },
+            answers: {
+                a: ["very"], b: ["to enrich", "to gain"], c: ["reading"], d: ["true", "right"], e: ["best"], f: ["to develop", "to enlighten"],
+                g: ["thinking", "rational"], h: ["disturbed", "agonized", "troubled"], i: ["academic", "text", "prescribed"], j: ["properly"]
+            }
+        },
+        {
+            id: 8,
+            passage: "The purpose of education is to bring about [a] changes in [b] behaviour. It also brings changes in our lives and society [c]. If it fails to do so, it can't be called education. Education is not only receiving certificates and getting grades. It is [d] more than that we can apply our [e] knowledge in our engagement with the world that lies [f]. We can do that in [g] ways. One way is civic engagement which is [h] appreciated all over the world. Civic engagement means working to make difference in civic life [i]. A person [j] civically is concerned about civic issues like injustice, discrimination and other forms of social ills.",
+            hints: {
+                a: "use an adjective to pre-modify the noun", b: "use a possessive to pre-modify the noun", c: "use a relative clause to post-modify the noun",
+                d: "use an intensifier to pre-modify the adjective", e: "use a past participle to pre-modify the noun", f: "use an adverb to post-modify the verb",
+                g: "use an adjective to pre-modify the noun", h: "use an adverb to pre-modify the verb 'appreciated'",
+                i: "use a prepositional phrase to post-modify the noun 'life'", j: "use a past participle to post-modify the noun"
+            },
+            answers: {
+                a: ["positive", "effective"], b: ["our"], c: ["in which we live", "where we live"], d: ["much", "far"], e: ["acquired"],
+                f: ["around", "ahead"], g: ["different", "many"], h: ["highly", "greatly"], i: ["of the community", "of a person", "of every citizen"],
+                j: ["engaged", "behaving"]
+            }
+        },
+        {
+            id: 9,
+            passage: "Language plays a [a] important role in our life. We use language from the time we wake up [b] till we go to bed at night. We use language not only in our [c] hours, but also in our dreams. We use language [d] what we feel and to say what we like or dislike. We also use language [e] information. Language is [f] present in our life. It is an [g] part of our life. As an [h] nation, we also have a language. But we had to struggle [i] to establish the right to our language. Many [j] sons of our country sacrificed their lives for our mother tongue.",
+            hints: {
+                a: "pre-modify the adjective with an intensifier", b: "post-modify the verb", c: "pre-modify the noun",
+                d: "post-modify the verb with an infinitive", e: "post modify the verb with an infinitive", f: "pre modify the adjective",
+                g: "pre-modify the noun", h: "pre-modify the noun", i: "use adverb to post-modify the verb", j: "pre-modify the noun with an adjective"
+            },
+            answers: {
+                a: ["very"], b: ["in the morning"], c: ["conscious", "active"], d: ["to express"], e: ["to share", "to gather"], f: ["always"],
+                g: ["integral", "inevitable"], h: ["independent"], i: ["a lot", "hard", "enormously"], j: ["brave", "courageous", "bold"]
+            }
+        },
+        {
+            id: 10,
+            passage: "People around were just watching as the [a] boy started [b] into the [c] canal. Then the traffic constable came, [d] no time, he jumped into the canal. The [e] constable did not think of his [f] life. He was [g] kind that he risked his life. People [h] by the canal praised him [i]. This type of person is a model [j].",
+            hints: {
+                a: "pre-modify the noun", b: "post-modify the verb", c: "pre-modify the noun", d: "pre-modify the noun with a present participle",
+                e: "pre-modify the noun with an adjective", f: "pre-modify the noun", g: "use an intensifier to pre-modify the adjective",
+                h: "post-modify the noun", i: "post-modify the verb with an adverb", j: "post-modify the noun"
+            },
+            answers: {
+                a: ["young", "small", "little"], b: ["to fall", "to drown", "drowning", "falling"], c: ["deep", "nearby"],
+                d: ["wasting", "taking", "spending"], e: ["brave", "courageous", "responsible"], f: ["own", "valuable"],
+                g: ["so"], h: ["standing"], i: ["highly"], j: ["to be followed"]
+            }
+        },
+        {
+            id: 11,
+            passage: "An [a] student is he, who has [b] good qualities. He studies [c]. He knows that the [d] duty of a student is to study. So, he never neglects [e] duty. He even makes the proper use of [f] moment. Sabuj, [g] of our class is an example of a good student. Sabuj is [h] helpful to us. I try [i] a boy like Sabuj. I want to be one of the [j] stars in the class.",
+            hints: {
+                a: "pre-modify the noun", b: "use a quantifier to pre-modify the noun", c: "post-modify the verb", d: "pre-modify the noun",
+                e: "use a possessive", f: "use a determiner to pre-modify the noun", g: "post-modify the noun with an appositive",
+                h: "pre-modify the adjective", i: "modify the verb with an infinitive", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["ideal"], b: ["many"], c: ["regularly", "attentively"], d: ["main"], e: ["his"], f: ["every"], g: ["the first boy"],
+                h: ["very"], i: ["to follow"], j: ["greatest"]
+            }
+        },
+        {
+            id: 12,
+            passage: "Cricket is an [a] game. It is not a game of [b] country. A [c] match is played between two teams. [d] team consists of eleven players. A cricket field must be [e]. It requires two wooden bats, a ball & two sets of stumps. [f] umpires conduct the game. Sometimes, a third umpire is required [g] an acute confusion. [h] the opportunity, the batter hits the ball away at a good distance and runs to the opposite wicket. If [i] batter is out, next batter comes in his place. Both teams try [j] to out all batters of the opposite.",
+            hints: {
+                a: "pre-modify the noun", b: "use possessive to pre-modify the noun", c: "use a noun-adjective to pre-modify the noun",
+                d: "use a distributive pronoun to per-modify the noun", e: "post-modify the noun", f: "use a numeral adjective to pre-modify the noun",
+                g: "use an infinitive to post-modify the verb", h: "use a participle to pre-modify the noun", i: "use an indefinite pronoun to pre-modify the noun",
+                j: "use an adverbial phrase to post-modify"
+            },
+            answers: {
+                a: ["international", "elite", "exciting"], b: ["our"], c: ["cricket"], d: ["each"], e: ["well-maintained", "well managed", "tidy"],
+                f: ["two"], g: ["to resolve", "to clear", "to remove"], h: ["having", "taking"], i: ["any"], j: ["their best", "heart and soul"]
+            }
+        },
+        {
+            id: 13,
+            passage: "Amerigo, [a] lives alone. His parents now live separate and none of them wants [b] his responsibility. [c] mother told him to go away because she is married to another man. [d] streets are now his home. He wanted [e] money from his father to buy a [f] ticket. But his father did not answer. He earns his living by working hard. [g] he finds work. Some of [h] works are very risky for him. Once he sold ice-cream [i]. But he got [j] money in return from the owner of the ice-cream shop.",
+            hints: {
+                a: "use noun in apposition", b: "use infinitive to post-modify the verb", c: "use possessive to pre-modify the noun",
+                d: "use determiner to pre-modify the noun", e: "use adjective to pre-modify the noun", f: "use noun-adjective to pre-modify the noun",
+                g: "use adverbial to pre-modify the verb", h: "use demonstrative to pre-modify the noun", i: "use prepositional phrase to post-modify the verb",
+                j: "use quantifier to pre-modify the noun"
+            },
+            answers: {
+                a: ["a helpless street boy"], b: ["to take"], c: ["his"], d: ["the"], e: ["some"], f: ["bus"], g: ["at times"], h: ["these"],
+                i: ["on the beach"], j: ["no"]
+            }
+        },
+        {
+            id: 14,
+            passage: "Drug addiction among the young generation has become a [a] concern. Drug is mainly used as medicine [b] diseases and an excess of taking drug for no disease is called drug addiction. It has grasped the young generation [c]. They take drugs to forget [d] sadness. [e] people take drugs [f]. Drug addiction causes [g] harm to human body. [h] them aware, we can remove this curse from our society. All concerned should take initiatives [i] it. The criminals should be punished with an [j] hand.",
+            hints: {
+                a: "pre-modify the noun", b: "use an infinitive to post-modify the verb", c: "post-modify the verb", d: "use possessive of pre-modify the noun",
+                e: "pre-modify the noun", f: "use adverb to post-modify", g: "pre-modify the noun", h: "use a participle",
+                i: "use an infinitive to post-modify the verb", j: "use a noun-adjective"
+            },
+            answers: {
+                a: ["great", "major"], b: ["to treat", "cure", "remove"], c: ["severely", "seriously", "extremely"],
+                d: ["their"], e: ["young", "addicted"], f: ["regularly", "recklessly"], g: ["serious", "severe"],
+                h: ["making"], i: ["to eradicate", "to remove", "to prevent"], j: ["iron"]
+            }
+        },
+        {
+            id: 15,
+            passage: "Bangladesh is a [a] country. Though it is a small country, it has a [b] population. People [c] depend on agriculture. They grow different kinds of crops [d]. We earn [e] currencies by exporting some of these crops. We are also rich in [f] resources. Now, we are able [g] natural gas from underground. Our industries are also rising [h]. We export [i] products to the developed countries. In this regard, we have already earned a [j] reputation.",
+            hints: {
+                a: "pre-modify the noun", b: "pre-modify the noun", c: "pre-modify the verb with an adverb", d: "post modify the verb with an adverbial phrase",
+                e: "pre-modify the noun with an adjective", f: "pre-modify the noun with an adjective", g: "post-modify the adjective with an infinitive",
+                h: "post-modify the verb with an adverb", i: "pre-modify the noun with a noun-adjective", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["small"], b: ["large", "big", "huge"], c: ["mainly", "basically"], d: ["all the year round"], e: ["foreign"], f: ["natural"],
+                g: ["to collect", "to extract"], h: ["rapidly"], i: ["plastic"], j: ["good"]
+            }
+        },
+        {
+            id: 16,
+            passage: "Newspaper plays a very [a] role in modern civilization. It publishes news and views of home and abroad. Only [b] knowledge is not enough in this competitive world. A newspaper helps a man [c] his general knowledge. Besides, academic books, one should read newspapers [d]. Newspaper helps one [e] the facts of the world. [f] regularly, one can be aware of everything. There are [g] kinds of newspapers. One should select the newspaper [h]. One should choose the [i] newspaper because many newspapers present news partially. Whatever the paper is, it [j] helps a man.",
+            hints: {
+                a: "pre-modify the noun", b: "pre-modify the noun", c: "post-modify the verb with infinitive", d: "post-modify the verb",
+                e: "post-modify the verb with an infinitive", f: "pre-modify the verb with a participle phrase", g: "pre-modify the noun",
+                h: "post-modify the verb", i: "pre-modify the noun", j: "pre-modify the verb"
+            },
+            answers: {
+                a: ["important", "significant"], b: ["bookish"], c: ["to improve", "to enhance"], d: ["regularly", "daily"], e: ["to know"],
+                f: ["reading newspaper"], g: ["various", "different"], h: ["wisely", "properly"], i: ["proper", "correct", "right"],
+                j: ["definitely", "certainly"]
+            }
+        },
+        {
+            id: 17,
+            passage: "Taking food is essential. We take food [a]. We cannot survive on earth if we do not take food. In fact [b] living beings need to take food. But it is a matter of great regret that [c] food is being adulterated. [d] adulteration is increasing [e] alarmingly that we cannot stop it. [f] dishonest businessmen use [g] chemicals in food and fruits to make illegal and quick money. But they do not think about [h] health. [i] adulterated food, people get sick. They are often attacked with different fatal diseases. So [j] food safety is a must today.",
+            hints: {
+                a: "use an infinitivie phrase to post-modify the verb", b: "use a quantifier to pre-modify the noun phrase", c: "use possessive to pre-modify the noun",
+                d: "use a noun adjective to pre-modify the noun", e: "use an intensifier to pre-modify the adverb", f: "use a determiner to pre-modify the noun phrase",
+                g: "pre-modify the noun", h: "use a possessive to pre-modify the noun", i: "use present participle", j: "use a gerund"
+            },
+            answers: {
+                a: ["to live", "to survive on earth"], b: ["all"], c: ["our"], d: ["food"], e: ["so"], f: ["some"], g: ["harmful"], h: ["our"],
+                i: ["taking", "eating"], j: ["ensuring"]
+            }
+        },
+        {
+            id: 18,
+            passage: "Air and water are the most [a] elements of the environment. But we are polluting them [b]. Mills and factories use fuel [c] their products. The burning of this fuel creates smoke [d]. Motor vehicles also pollute the air, [e]. Water is polluted by [f] kinds of waste and filth. We also contaminate water [g] into it. Farmers use [h] fertilizers and insecticides and pollute water. [i] water is [j] harmful for health.",
+            hints: {
+                a: "pre-modify the noun with an adjective", b: "post modify the verb with an adverb", c: "post modify the verb with an infinitive",
+                d: "post modify the verb with an adverbial", e: "use an appositive", f: "pre-modify the noun with a quantifier",
+                g: "post-modify the verb with a present participle phrase", h: "pre-modify the noun with an adjective", i: "pre-modify the noun with a past participle",
+                j: "pre-modify the adjective with an intensifier"
+            },
+            answers: {
+                a: ["important"], b: ["indiscriminately"], c: ["to manufacture"], d: ["in large amounts", "largely"],
+                e: ["a vital element of the environment"], f: ["many"], g: ["throwing toxic chemicals", "dumping oils"], h: ["chemical"],
+                i: ["polluted", "contaminated"], j: ["very"]
+            }
+        },
+        {
+            id: 19,
+            passage: "We can't think of our existence without language. It plays a [a] important role in our life. We use language from the time we wake up [b] till we go to bed at night. We use language not only in our [c] hours but also in our dreams. We use language [d] what we feel and to say what we like or dislike. We also use language [e] information. Language is [f] present in our life. It is an [g] part of our life. As an [h] nation, we also have a language. But we had to struggle [i] to establish the right of our language. Many [j] sons sacrificed their lives for the language.",
+            hints: {
+                a: "use an intensifier", b: "post-modify the verb", c: "pre-modify the noun", d: "use an infinitive",
+                e: "post-modify the verb with an infinitive", f: "pre-modify the adjective", g: "pre-modify the noun", h: "pre-modify the noun",
+                i: "post-modify the verb", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["very"], b: ["in the morning"], c: ["waking", "active"], d: ["to express"], e: ["to impart", "to record"], f: ["constantly", "always"],
+                g: ["essential", "indispensable"], h: ["emerging"], i: ["hard", "earnestly"], j: ["brave", "valiant"]
+            }
+        },
+        {
+            id: 20,
+            passage: "The roads [a] are beset with problems. [b] driving is one of them. Most of the drivers are not [c] trained. They are not well educated. They can [d] put their signature and read Bengali. They are indifferent to [e] life. They do not realize that life is [f] valuable than time. They drive [g]. They do [h] drive consciously. Even they themselves are not conscious of [i] own lives. They drive [j] and try to overtake others.",
+            hints: {
+                a: "use an adjective phrase to post modify the noun", b: "pre-modify the noun", c: "pre-modify the participle",
+                d: "use an adverb to pre-modify the verb", e: "use a noun adjective", f: "use a determiner", g: "post modify the verb",
+                h: "use an adverb to pre-modify the verb", i: "use a possessive", j: "use an adverb phrase to post modify the verb"
+            },
+            answers: {
+                a: ["situated in bangladesh"], b: ["reckless", "careless"], c: ["well", "properly"], d: ["hardly"], e: ["public", "human"],
+                f: ["more"], g: ["carelessly", "recklessly"], h: ["not"], i: ["their"], j: ["violating the traffic rules"]
+            }
+        },
+        {
+            id: 21,
+            passage: "Kazi Nazrul Islam is called the Shelley of Bengali literature. He was a [a] poet. He wrote [b] in every branch of Bengali literature. Nazrul, [c], won the attention of everyone in his early childhood. He wrote ceaselessly until the death of [d] poetic flair. He composed his songs [e]. His songs are [f] melodious. He enriched the Bengali literature [g]. His literary works have enriched [h] literature. He was [i] secular poet. He sang the songs of equality [j].",
+            hints: {
+                a: "pre-modify the noun", b: "post-modify the verb", c: "use an appositive", d: "use possessive pronoun",
+                e: "use an infinitive phrase to post-modify the verb", f: "use an intensifier to pre modify the adjective",
+                g: "use an adverb to pre-modify the verb", h: "use a noun adjective", i: "use an article", j: "use an adverbial phrase"
+            },
+            answers: {
+                a: ["rebel", "renowned", "great"], b: ["spontaneously", "almost"], c: ["our national poet"], d: ["his"],
+                e: ["to inspire the people"], f: ["very"], g: ["immensely", "greatly"], h: ["bengali", "bangla"],
+                i: ["a"], j: ["across the country", "throughout the country"]
+            }
+        },
+        {
+            id: 22,
+            passage: "Deforestation means cutting down of trees [a]. To meet up the basic needs of food and housing, trees are being cut in large scale and thus it causes [b] imbalance. Besides, there are some dishonest people who cut trees in our forest [c]. The [d] level is rising and many parts of the world are going to be engulfed by the sea in near future. New areas of the world are [e] turned into desert as a result of deforestation. So, we must stop [f] down trees unnecessarily. [g] trees indiscriminately will be hazardous for our future existence. If we destroy trees [h] one day the country will turn into a great desert. The [i] temperature will cause greenhouse effect. Necessary measures should be taken [j].",
+            hints: {
+                a: "post-modify the verb", b: "pre-modify the noun", c: "use an infinitive phrase to post-modify the verb",
+                d: "use a noun adjective to pre-modify the noun", e: "use a participle to pre-modify the verb", f: "use a participle to post-modify the verb",
+                g: "use a participle to pre-modify the noun", h: "use an adverbial phrase to post-modify the verb",
+                i: "use a participle to pre-modify the noun", j: "use an infinitive phrase to post-modify the verb"
+            },
+            answers: {
+                a: ["largely", "whimsically"], b: ["ecological", "natural"], c: ["to fulfil", "to earn money"], d: ["water"],
+                e: ["being"], f: ["cutting"], g: ["cutting"], h: ["at random"], i: ["rising"], j: ["to stop deforestation", "to save our world"]
+            }
+        },
+        {
+            id: 23,
+            passage: "A village doctor is a very [a] person in the rural areas of Bangladesh. He is [b] known as quack. A village doctor is not a [c] doctor. He usually sits in a small dispensary [d]. He treats the patients [e]. A village doctor is not a [f] man. His chamber is [g] furnished. He cannot supply costly medicine to [h] patients. In our country, the number of qualified doctors is [i] few. So, a village doctor is a great friend to the [j] villagers.",
+            hints: {
+                a: "pre-modify the noun", b: "pre-modify the verb", c: "pre-modify the noun", d: "post-modify the verb",
+                e: "use a participle phrase to post-modify the verb", f: "pre-modify, the noun", g: "pre-modify the verb", h: "pre-modify the noun",
+                i: "use an intensifier to pre-modify the adjective", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["familiar", "common", "popular"], b: ["well", "usually", "commonly"],
+                c: ["qualified", "registered"], d: ["everyday", "regularly"],
+                e: ["taking small money", "charging less money"], f: ["rich", "solvent"], g: ["poorly", "ill"],
+                h: ["poor", "needy"], i: ["completely", "very"], j: ["poor", "helpless"]
+            }
+        },
+        {
+            id: 24,
+            passage: "A balanced diet is a good mixture of [a] foods. It is essential for us [b] a healthy life. There are many benefits of eating a [c] diet because it prevents [d] diseases. As a result, we do not get sick [e]. We should select [f] diet according to our needs. We should not eat the [g] foods for the whole week. We can keep fit [h] a balanced diet. But it is not easy [i] a balanced diet. Here [j] nutritionist can help us.",
+            hints: {
+                a: "pre-modify the noun", b: "post-modify the adjective with an infinitive", c: "pre-modify the noun",
+                d: "use determiner to pre-modify the noun", e: "post-modify the verb with an adverb", f: "pre-modify the noun with possessive",
+                g: "use an adjective to pre-modify the noun", h: "use a participle", i: "post modify the adjective with an infinitive",
+                j: "use a determiner"
+            },
+            answers: {
+                a: ["good", "different", "various"], b: ["to lead", "to maintain"], c: ["balanced"],
+                d: ["many", "some"], e: ["easily", "frequently"], f: ["our"], g: ["same", "similar"], h: ["eating", "taking"],
+                i: ["to choose", "to select"], j: ["a"]
+            }
+        },
+        {
+            id: 25,
+            passage: "Rabindranath Tagore was a [a] poet of Bengali literature. He was born in a [b] family at Jarasanko, Kolkata. He went to school [c]. He wrote his [d] verse at the age of eight. At the age of seventeen, he went to London [e] school there. He was put up in a lodging house under the care of a [f] coach, Mr. Scott. He was lucky [g] an English family of Mr. Scott. He also visited the House of Parliament [h] Gladstone and John Bright's debates on Irish rule. He wrote letters to Kolkata [i] English society. At this, his family thought that they might lose their son [j]. So, he was called back to Kolkata.",
+            hints: {
+                a: "pre-modify the noun", b: "pre-modify the noun", c: "post-modify the verb", d: "pre-modify the noun",
+                e: "post-modify the verb with an infinitive", f: "pre-modify the noun", g: "post-modify the adjective with an infinitive",
+                h: "post-modify the verb with an infinitive", i: "post-modify the verb with a present participle", j: "post-modify the verb"
+            },
+            answers: {
+                a: ["renowned", "great"], b: ["noble", "wealthy"], c: ["early"], d: ["first"], e: ["to attend"], f: ["professional"], g: ["enough to find"],
+                h: ["to listen to"], i: ["admiring"], j: ["forever"]
+            }
+        },
+        {
+            id: 26,
+            passage: "It was a hot [a] day. A [b] crow flew all over the fields looking for water. For a long time, she could not find any water. She felt [c] weak, almost giving up hope. Suddenly, she saw a water jug below her. She flew [d] to see if there was any water inside. Yes, she could see some water inside the jug. The crow tried [e]. Sadly, she found that the neck of the jug was too narrow. Then she tried to push the jug down for the water to flow out. But she found [f] jug too heavy. The crow thought [g] what to do. [h], she saw some pebbles nearby. She [i] had a good idea. She started picking up the pebbles one by one, dropping each into the jug. As more and more pebbles filled the jug, the water level kept rising. Soon it was high [j] for the crow to drink. The crow quenched its thirst and flew away.",
+            hints: {
+                a: "use a noun adjective to pre-modify the noun", b: "pre-modify the noun", c: "use an intensifier to pre-modify the adjective",
+                d: "post-modify the verb", e: "use an infinitive phrase to post-modify the verb", f: "use a demonstrative to pre-modify the noun",
+                g: "use a phrase to post-modify the verb", h: "use a participle to pre-modify the verb", i: "pre-modify the verb", j: "post-modify the adjective"
+            },
+            answers: {
+                a: ["summer"], b: ["thirsty"], c: ["very"], d: ["quickly"], e: ["to drink water"], f: ["the", "that"], g: ["for a while"],
+                h: ["looking around"], i: ["finally", "then"], j: ["enough"]
+            }
+        },
+        {
+            id: 27,
+            passage: "Water is a [a] substance. It has no colour of [b] own. The [c] name of water is life. By drinking water, we can quench [d] thirst. Thus we can survive on earth. But [e] water is life killing. By drinking contaminated water, we suffer from diseases like diarrhoea, typhoid etc. We may [f] face [g] death by drinking such type of water. We are responsible for [h] pollution. Waste materials from mills and factories are thrown here and there. Farmers use fertilizers and insecticides in their land. During the rainy season, they are mixed with ponds and rivers. Besides, latrines [i] on ponds and rivers cause water pollution, [j] awareness should be raised to stop water pollution.",
+            hints: {
+                a: "pre-modify the noun", b: "possessive to pre-modify", c: "determiner to pre-modify the noun", d: "possessive to pre-modify the noun",
+                e: "pre-modify the noun", f: "pre-modify the verb", g: "pre-modify the noun", h: "noun adjective to pre-modify the noun",
+                i: "participle to post-modify the noun", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["liquid"], b: ["its"], c: ["other"], d: ["our"], e: ["contaminated", "polluted"], f: ["easily"], g: ["premature"], h: ["water"],
+                i: ["built", "standing"], j: ["public"]
+            }
+        },
+        {
+            id: 28,
+            passage: "Most of the people in [a] country do not know the importance of English. In fact, it is an [b] language and we are living in a [c] village. So, if you know English [d], you can communicate with [e] rest of the world. It is surely an important element of your [f] skill. Without the knowledge of English with proper understanding, you cannot complete [g] higher studies because most of the books are written in English in the process of higher education. Poor knowledge of English will also hamper your [h] development. In short, if you do not have a good command of English, you will suffer [i] of your life. So, don't waste your time and try to learn English [j] from today.",
+            hints: {
+                a: "use possessive to pre-modify the noun", b: "use an adjective to pre-modify the noun", c: "pre-modify the noun",
+                d: "post-modify the verb with an adverb", e: "use article to pre-modify the noun phrase", f: "use a noun adjective to pre-modify the noun",
+                g: "use possessive to pre-modify the noun", h: "use a noun adjective", i: "post-modify the verb with prepositional phrase/adverbial",
+                j: "post-modify the verb with an adverb"
+            },
+            answers: {
+                a: ["our"], b: ["international"], c: ["global"], d: ["well"], e: ["the"], f: ["language"], g: ["your"], h: ["career"],
+                i: ["in every stage"], j: ["properly"]
+            }
+        },
+        {
+            id: 29,
+            passage: "Othello, [a] had risen to become a general. He had shown his bravery in many [b] battles against the Turks. Everyone praised him [c] and the senate trusted and honoured him. Brabantio, a rich senator of Venice had a daughter named Desdemona [d]. Brabantio [e] invited Othello to his house where he and his daughter listened in wonder to Othello as he spoke about his adventures. He told them of deserts, of caves and of mountains high [f] to touch the sky. Desdemona had to weep [g] and she never became tired of listening to it. She pitied Othello [h] for the misfortunes and hardships of his life. Her pity [i] turned to love. She refused all the young men [j] because she loved Othello, a noble Muslim Moor from North Africa.",
+            hints: {
+                a: "Use an appositive to post-modify the noun", b: "Use an adjective to pre-modify the noun", c: "Use an adverb to post-modify the verb",
+                d: "Use a relative clause to post-modify the noun", e: "Use an adverb to pre-modify the verb", f: "Use an intensifier to pre-modify the adjective",
+                g: "Use a present participle to post-modify the verb phrase", h: "Use an adverb to post-modify the verb", i: "Use an adverb to post-modify the verb",
+                j: "Use an infinitive to post-modify the verb"
+            },
+            answers: {
+                a: ["a black moor"], b: ["fearful", "dangerous"], c: ["highly"], d: ["who loved him"], e: ["sometimes"], f: ["enough"],
+                g: ["listening to his stories"], h: ["much"], i: ["finally"], j: ["to marry"]
+            }
+        },
+        {
+            id: 30,
+            passage: "The world is producing millions of tons of domestic rubbish and toxic industrial waste [a] and it is becoming [b] difficult to find suitable locations to get rid of all the refuse, the disposal of [c] kinds of waste is [d] polluting the environment. We know that air is an [e] element of our environment. Man makes fire [f] food, make bricks, melt tar for road construction and to do [g] things which pollute the air. Railway engines and [h] houses create smoke [i]. Mills and factories also belch [j] smoke.",
+            hints: {
+                a: "post-modify the verb", b: "pre-modify the adjective", c: "pre-modify the noun", d: "post-modify the verb",
+                e: "post-modify the noun", f: "post-modify the verb by an infinitive", g: "pre-modify the noun", h: "pre-modify the noun by a noun adjective",
+                i: "post-modify the verb by adverb phrase", j: "pre-modify the noun by adjective phrase"
+            },
+            answers: {
+                a: ["each year", "gradually"], b: ["more", "extremely"], c: ["various"], d: ["seriously", "constantly"],
+                e: ["important", "essential"], f: ["to cook"], g: ["many other"], h: ["power"], i: ["by burning coal and oil"],
+                j: ["a lot of", "deep black"]
+            }
+        },
+        {
+            id: 31,
+            passage: "'Health is wealth' refers to the importance and value of health. Health is compared to wealth, because a [a] man can earn money and accumulate wealth. [b] wealth is valueless. It is health [c] can give us bliss and make us [d] happy. Health alone can ennoble us [e]. It is also said that a [f] mind lies is a sound body. A healthy man can work [g] and attain wealth. We might get [h] wealth by following some rules of health. We must rise [i] and take a [j] walk. Physical exercise must be taken regularly.",
+            hints: {
+                a: "Pre-modify the noun", b: "use a prepositional phrase to Pre-modify the verb", c: "use a relative pronoun to post-modify the noun",
+                d: "use an intensifier to Pre-modify the adjective", e: "use an infinitive phrase to post-modify the verb", f: "Pre-modify the noun",
+                g: "post-modify the verb", h: "use a demonstrative to Pre-modify the noun", i: "post-modify the verb", j: "use a noun adjective to Pre-modify the noun"
+            },
+            answers: {
+                a: ["healthy"], b: ["without a sound health"], c: ["that"], d: ["really"], e: ["to enjoy our life"], f: ["sound"], g: ["hard"],
+                h: ["this"], i: ["early"], j: ["morning"]
+            }
+        },
+        {
+            id: 32,
+            passage: "I enjoyed my [a] journey by plane [b]. After getting into the plane, I felt a little bit nervous. I looked [c] and tried to have a glimpse of the other passengers. All of them looked calm and [d], but I felt my tension [e]. The captain announced that he would be soon starting. I clenched [f] fists. The plane began to race down the runway and after a while with a jerk, it took off. I looked [g] from my window and saw buildings, people and trees looking like miniatures. As we rose [h], the plane bumped a little as the weather was a [i] rough. I held on to my seat and closed my eyes. However, soon I began [j] and looked out of my window again.",
+            hints: {
+                a: "Pre-modify the noun", b: "post-modify the verb", c: "post-modify the verb", d: "post-modify the verb",
+                e: "use a participle to post-modify the noun", f: "use a possessive to Pre-modify the noun", g: "post-modify the verb",
+                h: "post-modify the verb", i: "Pre-modify the adjective", j: "use an infinitive phrase to post-modify the verb"
+            },
+            answers: {
+                a: ["first"], b: ["last week"], c: ["quickly"], d: ["relaxed"], e: ["rising"], f: ["my"], g: ["down"], h: ["higher"], i: ["little"],
+                j: ["to overcome my fear"]
+            }
+        },
+        {
+            id: 33,
+            passage: "Macbeth was the General of Scotland. He fought [a] and won the battle. While he was returning to his castle, he saw three witches [b] about him. He came [c] from the witches that he would be the king of Scotland. He became [d] ambitious. His wife also wanted Macbeth [e] the king. She was a very [f] woman. So, she began [g] Macbeth. Then they both plotted to kill Duncan, [h]. They planned [i] Duncan when he would come to stay with them in their castle, [j] a knife, Macbeth entered the room of Duncan and killed him.",
+            hints: {
+                a: "post-modify the verb", b: "post-modify the noun with a present participle", c: "post-modify the noun with an infinitive",
+                d: "pre-modify the adjective with an intensifier", e: "post-modify the verb with an infinitive", f: "pre-modify the noun",
+                g: "post-modify the verb with an infinitive", h: "post-modify the noun with an appositive", i: "post-modify the verb with an infinitive",
+                j: "Pre-modify the verb with a present participle"
+            },
+            answers: {
+                a: ["bravely", "fiercely"], b: ["talking"], c: ["to know"], d: ["very"], e: ["to be"], f: ["greedy"], g: ["to instigate"],
+                h: ["the king of scotland"], i: ["to kill"], j: ["taking"]
+            }
+        },
+        {
+            id: 34,
+            passage: "Sher-e-Bangla A.K. Fazlul Haq, [a], was very meritorious from his boyhood. His father Kazi Wazed Ali was a [b] pleader in the Barishal Bar. [c] day the boy Fazlul Haq was reading [d]. His father was passing by. He was reading his lessons and tearing off [e] pages of his book one after another. He [f] entered the room and said, \"O my boy, do not play with your book.\" \"I am not playing. I have already gone through [g] pages. So, I don't need them at all\", said he (FH). [h] father wanted to test him. He asked him to quote [i] lines from such and such pages of his book. Fazlul Haq quoted the pieces from memory word for word. He was [j] charmed at the wonderful memory of his son.",
+            hints: {
+                a: "Post-modify the noun with an appositive", b: "Use an adjective to pre-modify the noun", c: "Use quantifier to pre-modify noun",
+                d: "Post- modify the verb with prepositional phrase", e: "use article to pre-modify the noun", f: "Use an adverb to pre-modify the verb",
+                g: "Use a demonstrative to pre-modify the noun", h: "Use possessive to pre-modify noun", i: "use quantifier to pre-modify the noun",
+                j: "Use an adverb to pre-modify the adjective"
+            },
+            answers: {
+                a: ["the great leader of bengal"], b: ["famous", "well-known"], c: ["one"], d: ["in his room"], e: ["the"], f: ["instantly"],
+                g: ["these"], h: ["his"], i: ["some"], j: ["very", "greatly"]
+            }
+        },
+        {
+            id: 35,
+            passage: "A day in which it rains [a] is called a rainy day. We see [b] kind of day in the wet season [c]. [d] it rains cats and dogs without any break. It stops [e] wheels of life. A rainy day is dull and gloomy. The sky remains cloudy. People remain at room and spend the whole day in idleness. A rainy day is not enjoyable to the poor. They cannot earn [f] livelihood and as a result, they spend the day without eating anything. [g] roads go under water. People walk along the [h] roads with shoes in hand. They fold up their clothes almost up to their knees. Students fail [i] and if some of them go at all, they get wet on the way. So, schools are on [j] mood. Thus a rainy day is a workless and idle day.",
+            hints: {
+                a: "post-modify the verb with an adverb", b: "Use a demonstrative to pre-modify the noun", c: "post-modify the noun with an appositive",
+                d: "pre-modify the verb with prepositional phrase", e: "Use article to pre-modify the noun phrase", f: "Use possessive to pre-modify; the noun",
+                g: "Use quantifier to pre-modify the noun", h: "Use an adjective to pre- modify the noun", i: "use an infinitive phrase to post-modify the verb",
+                j: "Use a noun-adjective to pre-modify the noun"
+            },
+            answers: {
+                a: ["torrentially"], b: ["this"], c: ["the rainy season"], d: ["in this season"], e: ["the"], f: ["their"], g: ["some", "many"],
+                h: ["muddy"], i: ["to go to school"], j: ["holiday", "vacation"]
+            }
+        },
+        {
+            id: 36,
+            passage: "Hercules [a] was noted for super human energy. He had to undergo some difficult tasks [b]. The valley of Nemea was being disturbed by a [c] lion and so Eurystheus ordered Hercules [d] and bring him [e] skin. At first, Hercules tried to fight the lion with his club and arrows but [f] took him nowhere. Then Hercules attempted a [g] tactic: he decided he would use his hands. He thus managed to slay the animal on his own, [h]. Victorious, he returned to Mycenae carrying the [i] lion on his shoulders, [j] sight that terrified the king.",
+            hints: {
+                a: "use an appositive to post-modify the noun", b: "use an adjective clause to post-modify the noun", c: "pre-modify the noun",
+                d: "use an infinitive phrase to post-modify the noun", e: "use a possessive", f: "use a demonstrative", g: "pre-modify the noun",
+                h: "use a participle phrase to post modify the noun", i: "pre-modify the noun", j: "use a determiner"
+            },
+            answers: {
+                a: ["the son of zeus"], b: ["which are known as his tasks"], c: ["terrible"],
+                d: ["to slay the beast"], e: ["its"], f: ["this"], g: ["different"], h: ["relying on his immense strength"],
+                i: ["dead"], j: ["a"]
+            }
+        },
+        {
+            id: 37,
+            passage: "Nelson Mandela, [a], is one of the greatest leaders of the world. During [b] time of Mandela, the Europeans were separated from the non-Europeans. It was [c] policy of racial segregation. The blacks were subjected to [d] sorts of indignities. They were denied all basic [e] rights. They were in fact aliens in [f] own country. The blacks were also treated [g]. Even dogs received a much better treatment than the blacks. The [h] leader vowed to put an end to the inhuman practice. Unfortunately, [i] great man was thrown behind the prison bars. But the oppressive ruler could not break his [j] spirit.",
+            hints: {
+                a: "post-modify the noun with an appositive", b: "use determiner", c: "use a noun adjective to pre-modify the noun",
+                d: "use a noun adjective to pre-modify the noun", e: "use an adjective to pre-modify the noun", f: "use possessive to pre-modify the noun phrase",
+                g: "use an adverb to post-modify the verb", h: "use an adjective to pre-modify the noun", i: "use a demonstrative to pre-modify the noun",
+                j: "use a present participle to pre-modify the noun"
+            },
+            answers: {
+                a: ["the first black president of south africa"], b: ["the"], c: ["government"], d: ["all"], e: ["human"], f: ["their"],
+                g: ["cruelly"], h: ["great"], i: ["this"], j: ["fighting"]
+            }
+        },
+        {
+            id: 38,
+            passage: "Population explosion is a [a] threat to our environment and existence. Especially in Bangladesh, the population is growing at such a high rate that the environment may soon fail to supply the people with their [b] necessities. Unless we take [c] steps to stop this rapid growth [d], our environment will one day encounter an [e] difficulty and danger. As a result, the inhabitants may experience destruction. With the growth of population, people need more things. They need more food, clothes, accommodation, furniture, educational and [f] facilities and so forth. But a [g] country like Bangladesh cannot supply the people with these necessities. Many people are deprived of [h] educational and medical facilities. Many people are not getting jobs to earn [i] living. A lot of people are making their homes in the [j] land.",
+            hints: {
+                a: "pre-modify the noun with an adjective", b: "pre-modify the noun", c: "Pre-modify the noun with an adjective",
+                d: "post-modify the noun with a prepositional phrase", e: "pre-modify with an adjective", f: "pre-modify the noun",
+                g: "Pre-modify the noun with a participle", h: "Pre-modify the noun phrase", i: "Use a determiner to pre-modify the noun",
+                j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["constant", "great", "serious"], b: ["minimum"], c: ["immediate"], d: ["of population"], e: ["enormous"], f: ["medical"],
+                g: ["poor", "developing"], h: ["their"], i: ["a"], j: ["cultivable"]
+            }
+        },
+        {
+            id: 39,
+            passage: "Many years ago there lived a king named Solomon. He was very wise and helped people in many ways. [a] spread far and wide. The Queen of Sheba heard about the name and fame of king Solomon, [b]. She could not believe that he was so wise and wealthy. [c] she decided to visit his country and meet him personally, [d] the queen came to king Solomon's palace. The queen brought with her hundred servants who carried many fine presents. [e] she brought with her some artificial flowers that were mixed with some real flowers. The flowers were [f] beautiful and looked alike. [g] the queen asked the courtiers to find out the real ones. They took time and watched the flowers minutely. [h] they failed to differentiate. [i] king Solomon watched some bees flying over some flowers. [j] he realized those flowers to be real.",
+            hints: {
+                a: "Noun phrase", b: "Post-modify with an appositive", c: "Adverbial", d: "adverbial", e: "Adverbial", f: "an intensifier",
+                g: "Infinitive phrase", h: "Adverbial", i: "Adverbial", j: "Participle phrase"
+            },
+            answers: {
+                a: ["his name and fame"], b: ["a wise and wealthy king"], c: ["at last"], d: ["one day"], e: ["besides"], f: ["very"],
+                g: ["to test the king"], h: ["in spite of trying hard"], i: ["at that time"], j: ["observing"]
+            }
+        },
+        {
+            id: 40,
+            passage: "We know that [a] species are important for maintaining [b] balance. If one is lost, the whole natural environment [c] changes. In order to protect the environment from being spoilt, we should [d] protect [e] wildlife. [f] good news is that [g] countries are [h] taking action to protect their endangered wild life. George Lay Cock, [i] writes. \"Mankind must develop a concern for wild creatures and a determination that [j] wild species will not perish\".",
+            hints: {
+                a: "use quantifier to pre-modify the noun", b: "pre-modify the noun", c: "pre-modify the verb", d: "pre-modify the verb",
+                e: "use possessive to pre-modify the noun", f: "use determiner to pre-modify the noun phrase", g: "use quantifier to pre-modify the noun",
+                h: "pre-modify the verb", i: "post-modify the noun with an appositive", j: "use demonstrative to pre-modify the noun"
+            },
+            answers: {
+                a: ["all"], b: ["ecological"], c: ["really"], d: ["therefore"], e: ["our"], f: ["the"], g: ["many"], h: ["now"],
+                i: ["author of books on wildlife"], j: ["these"]
+            }
+        },
+        {
+            id: 41,
+            passage: "A street hawker is a [a] figure in the streets of a town or city. He sells a variety of things. He moves from street to street [b]. He carries his things sometimes on the head, sometimes in his hands and at some other times in a [c] handcart. He sells toys, ribbons, clothing, sweets, fruits, utensils, newspapers, fancy goods and things of domestic use by bringing them up to [d] doors. Generally he is a clever fellow [e] knows his business [f]. So, he has to be very careful about what things [g]. He attracts the attention of [h] customers by making a peculiar sound. The hawker generally has to choose an hour when the male members of the family are out of home and the female members are free from their works. He hopes thereby to make a good bargain. Though he tries [i] to earn goodness, the standard of their life is not good. Sometimes they have to be mentally and physically tortured. But they also should be treated as an important part of [j] society.",
+            hints: {
+                a: "Pre-modify the noun", b: "use adverbial phrase to post-modify the verb", c: "Pre-modify the noun", d: "use possessive to Pre-modify the noun",
+                e: "use relative pronoun to post-modify the noun", f: "post-modify the verb", g: "use infinitive to post-modify the noun",
+                h: "use possessive to Pre-modify the noun", i: "use adverbial phrase to post-modify the verb", j: "use possessive to Pre-modify the noun"
+            },
+            answers: {
+                a: ["famous", "familiar"], b: ["from dawn to dusk"], c: ["small"], d: ["people's"], e: ["who"], f: ["well"], g: ["to sell"], h: ["his"],
+                i: ["heart and soul"], j: ["our"]
+            }
+        },
+        {
+            id: 42,
+            passage: "The impact of climate change will pose a [a] threat to human existence and civilization. Temperature of the world will increase [b]. This could catastrophic-ally reduce [c] ability to grow food, destroy or severely damage wildlife and wilderness, raise sea levels and thereby flood [d] areas and farmland. Melting of icecaps of Polar Regions will occur for [e] sea level rising. As a result, natural disasters like flood, cyclone, etc. will [f] occur in the world. It is predicted that Bangladesh will lose 40% of [g] land to the Bay of Bengal by 2050. According to the report the [h] temperature of Bangladesh has already increased much. [i] major southern part of Bangladesh will go under water. It will bring untold suffering to the people [j] in the coastal areas.",
+            hints: {
+                a: "Pre-modify the noun", b: "post-modify the verb", c: "use possessive to Pre-modify the noun", d: "Pre-modify the noun",
+                e: "use a demonstrative to Pre-modify the noun", f: "post-modify the verb", g: "use possessive to Pre-modify the noun",
+                h: "Pre-modify the noun", i: "use adverb to modify the whole sentence", j: "use present participle to post-modify the noun"
+            },
+            answers: {
+                a: ["serious"], b: ["alarmingly"], c: ["mankind's"], d: ["coastal"], e: ["this"], f: ["frequently"], g: ["her"], h: ["average"],
+                i: ["consequently"], j: ["living"]
+            }
+        },
+        {
+            id: 43,
+            passage: "Time is the most valuable asset in [a] life. It is [b] than money and all other things. It goes on [c] and does not come back. Lost money and health can be regained, but [d] time cannot come back. Time once gone, is gone [e]. Our life is the sum total of hours, days and years. But it is [f] short. In [g] short duration if we want to shine in life, we have to make the best use of our time. We must not keep any work undone for future. Rather we should complete our work [h]. A man [i] does his work in time can shine in life. On the other hand, those who waste their time, cannot pick up the fruits of success in [j] lives.",
+            hints: {
+                a: "use possessive to Pre-modify the noun", b: "Pre-modify the noun", c: "post-modify the verb", d: "use past participle to post-modify the noun",
+                e: "post-modify the verb", f: "use an intensifier to Pre-modify the adjective", g: "use a demonstrative to Pre-modify the noun",
+                h: "post-modify the verb", i: "use relative pronoun to post-modify the noun", j: "use possessive to Pre-modify the noun"
+            },
+            answers: {
+                a: ["our"], b: ["more valuable"], c: ["ceaselessly"], d: ["lost"], e: ["forever"], f: ["very"], g: ["this"], h: ["in time"],
+                i: ["who"], j: ["their"]
+            }
+        },
+        {
+            id: 44,
+            passage: "Women are nowadays [a] important as men in society. They constitute nearly half of our [b] population. So they too possess [c] rights and duties as men do. They have noble missions [d] as men. If they get opportunities, their genius and capacities will bloom [e]. No nation can make real progress [f] half of its population in the dark. The progress of the nation is not possible if we do not develop our women [g]. To develop our women, we need [h] them. And an [i] woman can be an asset to herself and to the country. Hence education should be the [j] priority.",
+            hints: {
+                a: "Pre-modify the adjective", b: "pre-modify the noun", c: "Pre-modify the noun", d: "Post-modify the noun with an infinitive",
+                e: "Post-modify the verb", f: "Post-modify the verb with a present participle", g: "Post-modify the verb",
+                h: "Post-modify the verb with an infinitive", i: "Pre-modify the noun", j: "Pre-modify the noun"
+            },
+            answers: {
+                a: ["as"], b: ["total"], c: ["equal"], d: ["to fulfill"], e: ["fully", "completely"], f: ["keeping"], g: ["properly"],
+                h: ["to educate"], i: ["educated"], j: ["first"]
+            }
+        },
+        {
+            id: 45,
+            passage: "Computer is one of the [a] invention of modern technology. It has changed the world [b]. It is being used in [c] sectors. Both teacher's and students use it [d] knowledge. So, it is helping education [e]. It helps [f] diseases. It has quickened [g] transaction. It is also used [h] in industries and factories. But it was not invented [i]. It took [j] years to develop.",
+            hints: {
+                a: "pre-modify the noun", b: "post modify the verb", c: "pre-modify the noun", d: "post-modify the verb with an infinitives",
+                e: "post-modify the verb", f: "post-modify the verb with an infinitive", g: "pre-modify the noun", h: "post-modify the verb",
+                i: "post-modify the verb", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["greatest"], b: ["greatly"], c: ["all"], d: ["to acquire"], e: ["hugely"], f: ["widely"], g: ["financial"],
+                h: ["extensively"], i: ["overnight"], j: ["many"]
+            }
+        },
+        {
+            id: 46,
+            passage: "Many people all over the world die [a] because of pollution. These unfortunate and [b] deaths are caused by environmental pollution. Environmental pollution refers to [c] specific pollutions. Firstly air is polluted by domestic waste and [d] waste. It mainly causes [e] disease. Then we pollute water [f] by throwing waste into it. Water pollution causes many [g] diseases. Next factor is noise pollution [h] aggression and damaging hearing. And finally, odour pollution from dumped or untreated [i] waste which causes discomfort to our sense of smell. We should take actions [j] these problems.",
+            hints: {
+                a: "post-modify the verb", b: "pre-modify the noun", c: "pre-modify the noun", d: "pre-modify the noun", e: "pre-modify the noun",
+                f: "post-modify the verb", g: "pre-modify the noun", h: "post-modify the noun with a present participle",
+                i: "pre-modify the noun with a noun-adjective", j: "post-modify the noun with an infinitive"
+            },
+            answers: {
+                a: ["unnecessarily"], b: ["avoidable"], c: ["four"], d: ["industrial"], e: ["respiratory"], f: ["indiscriminately"],
+                g: ["water-borne"], h: ["causing"], i: ["human"], j: ["to control"]
+            }
+        },
+        {
+            id: 47,
+            passage: "Traffic jam is a [a] problem in Dhaka. It becomes serious in [b] hours. Sometimes it becomes [c] serious. It becomes very difficult for people [d]. They cannot reach their destination [e]. Our population has risen very [f]. The number of vehicles has also gone up. But our roads are not broad [g] accommodate so many vehicles. Slow [h] vehicles have added complications to this problem. Moreover, our drivers are not willing [i]. Sometimes they drive [j] and meet accidents.",
+            hints: {
+                a: "pre-modify the noun", b: "pre-modify the noun", c: "pre-modify the adjective with an intensifier", d: "post-modify the noun with an infinitive",
+                e: "post-modify the verb", f: "post-modify the verb", g: "post-modify the adjective", h: "pre-modify the noun",
+                i: "post-modify the adjective with an infinitive phrase", j: "post-modify the verb"
+            },
+            answers: {
+                a: ["common"], b: ["rush"], c: ["very"], d: ["to move"], e: ["punctually"], f: ["fast"], g: ["enough"], h: ["moving"],
+                i: ["to follow the traffic rules"], j: ["recklessly"]
+            }
+        },
+        {
+            id: 48,
+            passage: "Physical exercise is very necessary for us [a]. It means [b] movement of our limbs. We should take physical exercise [c]. There are [d] kinds of exercises. All people may not know all these. So, they can take one exercise very [e] and that is walking. They can walk for thirty or forty minutes [f], or in the afternoon. But they have to take it [g]. Those who are workers do not need [h] physical exercise. They work [i] to earn money. It keeps them [j] fit.",
+            hints: {
+                a: "post-modify the adjective with an infinitive phrase", b: "pre-modify the noun", c: "post-modify the verb", d: "pre-modify the noun",
+                e: "post-modify the verb", f: "post-modify the verb", g: "post-modify the verb", h: "post-modify the verb with an infinitive",
+                i: "post-modify the verb", j: "pre-modify the adjective"
+            },
+            answers: {
+                a: ["to keep good health", "to keep fit"], b: ["regular"], c: ["regularly"], d: ["many"], e: ["easily"], f: ["in the morning"],
+                g: ["regularly"], h: ["to take"], i: ["hard"], j: ["physically"]
+            }
+        },
+        {
+            id: 49,
+            passage: "Leisure is [a] necessary for us. Leisure means [b] time from work. All should have some free time [c]. Man cannot work [d] for long. They need recreation [e] again. If they do not have leisure or recreation, they cannot work [f]. Different people spend their leisure [g]. People [h] in the villages pass their leisure going to the tea stall, local markets or gathering on the roadsides. People who live in the towns or cities spend their free time [i] the parks and their relatives. But whatever the place or whoever the person is watching television is common to all. It can entertain people of [j] ages.",
+            hints: {
+                a: "pre-modify the adjective with an intensifier", b: "pre-modify the noun", c: "post-modify the noun with an infinitive",
+                d: "post-modify the verb", e: "post-modify the verb with an infinitive", f: "post-modify the verb", g: "post-modify the verb",
+                h: "post-modify the noun with a present participle phrase", i: "post-modify the verb with a present participle", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["very"], b: ["free"], c: ["to relax"], d: ["hard"], e: ["to work"], f: ["properly", "well"], g: ["differently"], h: ["living"],
+                i: ["visiting"], j: ["all"]
+            }
+        },
+        {
+            id: 50,
+            passage: "Modern life depends [a] on transport. We can understand well how Important transport is when it is hampered by [b] disasters and political crisis. Transport helps us [c] our destinations. It had quickened trade and commerce [d]. It also helps us [e] with our relatives and friends. The development of transport has made the world small. We can travel to any country [f]. We use transport [g] our goods and products to different places. The use of transport saves our time [h]. It also helps us [i] knowledge and ideas. [j], we can promote understanding among the nations.",
+            hints: {
+                a: "post-modify the verb", b: "pre-modify the noun", c: "post-modify the verb with an infinitive", d: "post-modify the verb",
+                e: "post-modify the verb with an infinitive", f: "post-modify the verb", g: "use an infinitive to post-modify the verb",
+                h: "post-modify the verb", i: "post-modify the verb with an infinitive", j: "pre-modify the verb with a present participle phrase"
+            },
+            answers: {
+                a: ["much"], b: ["natural"], c: ["to reach"], d: ["all over the world"], e: ["to communicate"], f: ["easily", "quickly"],
+                g: ["to carry"], h: ["hugely"], i: ["to gain"], j: ["taking the help of transport"]
+            }
+        },
+        {
+            id: 51,
+            passage: "Nobel Prize is awarded for [a] contributions to different fields. It is awarded in [b] fields. It is the world's most [c] prize. If the recipients are more than one, the prize money is divided [d] among them. Alfred Nobel founded the Nobel Prize. He earned a lot of money [e]. For this [f] invention he became famous. His name and fame spread [g]. There is a Nobel Committee [h] the right person for award. The winners of Nobel Prize are treated with [i] respect. The world will always remember Alfred Nobel for his [j] contribution.",
+            hints: {
+                a: "pre-modify the noun", b: "pre-modify the noun", c: "pre-modify the noun", d: "post-modify the verb",
+                e: "post-modify the verb with a present participle phrase", f: "pre-modify the noun", g: "post-modify the verb",
+                h: "post modify the noun with an infinitive", i: "pre-modify the noun", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["outstanding"], b: ["six"], c: ["prestigious"], d: ["equally"], e: ["inventing dynamite"], f: ["important"],
+                g: ["all over the world"], h: ["to chose", "to select"], i: ["great"], j: ["remarkable"]
+            }
+        },
+        {
+            id: 52,
+            passage: "Some days ago the marriage ceremony of my [a] sister was held. We decorated the house [b]. The guests began [c] in the evening. I along with my cousins was at the gate [d] the guests. [e] their seats, the guests waited for the groom. As we saw the groom [f], we went to the gate. Then we took the groom to the stage. The Quazi came and performed the marriage [g] the verses from the [h] Quran. Then we served the [i] meal to the groom and the guests. At the end, we bade adieu to our sister with the groom [j] on the road.",
+            hints: {
+                a: "pre-modify the noun", b: "post-modify the verb", c: "post-modify the verb with an infinitive",
+                d: "post- modify the verb with an infinitive", e: "pre-modify the verb with a present participle",
+                f: "post-modify the noun with a present participle", g: "post-modify the verb with a present participle",
+                h: "pre-modify the noun", i: "pre-modify the noun", j: "post-modify the verb with a present participle"
+            },
+            answers: {
+                a: ["elder"], b: ["beautifully"], c: ["to come"], d: ["to receive"], e: ["taking"], f: ["coming"], g: ["reciting"],
+                h: ["holy"], i: ["delicious"], j: ["standing"]
+            }
+        },
+        {
+            id: 53,
+            passage: "Truthfulness is a [a] virtue. Everybody likes a [b] person. People [c] in the area believe him for this quality. It is a very [d]-quality. All like [e] him. He may lead a [f] life but he is honoured [g]. Everybody respects him as he is honest. Everybody relies on him because he never tells a lie. He behaves [h] with his neighbours. He becomes a [i] person at his workplace. We all should try [j].",
+            hints: {
+                a: "pre-modify the noun", b: "pre-modify the noun", c: "post-modify the noun with a present participle", d: "pre-modify the noun",
+                e: "post-modify the verb with an infinitive", f: "pre-modify the noun", g: "post-modify the verb", h: "post-modify the verb",
+                i: "pre-modify the noun", j: "post-modify the verb with an infinitive phrase"
+            },
+            answers: {
+                a: ["noble", "great"], b: ["truthful"], c: ["living"], d: ["rare"], e: ["to help"], f: ["poor"], g: ["everywhere"], h: ["well"],
+                i: ["popular"], j: ["to be truthful"]
+            }
+        },
+        {
+            id: 54,
+            passage: "On a rainy day it rains [a] all day long. The sky is overcast with [b] clouds. People cannot go out without [c] umbrella. It affects our [d] activities. Even the schools and colleges are shut down. But many people like [e] in the rain. They go to the [f] space and enjoy the rain. The working class people suffer a lot [g]. They do not get work and spend a [h] day which brings misfortune to them. They cannot earn [i] their family. So, a [j] day is a curse to the poor.",
+            hints: {
+                a: "post-modify the verb", b: "pre-modify the noun", c: "pre-modify the noun a determiner", d: "pre-modify the noun",
+                e: "post-modify the verb with an infinitive phrase", f: "pre-modify the noun", g: "post-modify the verb", h: "pre-modify the noun",
+                i: "post-modify the verb with an infinitive", j: "pre-modify the noun"
+            },
+            answers: {
+                a: ["heavily", "continuously"], b: ["dark", "black"], c: ["an"], d: ["daily", "normal"], e: ["to bathe", "to get wet"],
+                f: ["open"], g: ["on this day"], h: ["lazy", "jobless"], i: ["to support"], j: ["rainy"]
+            }
+        },
+        {
+            id: 55,
+            passage: "Robert Bruce, [a] fought [b] battles against king Edward I of England. But [c], he was defeated in [d] battle. While the pensive king was thinking about [e] unfortunate condition lying in a cave, he saw a spider. The spider was working with [f] goal. The goal was to reach the ceiling and [g] task was not easy for the little creature. It fell down [h], but did not give up hope and, eventually, it succeeded at its seventh attempt. The perseverance of the spider encouraged Robert Bruce. He fought again [i] and this time he defeated [j] English army and secured the independence of Scotland.",
+            hints: {
+                a: "post-modify the noun with an appositive", b: "use a quantifier to pre-modify the noun", c: "use an adverb to pre-modify the verb",
+                d: "use a determiner to pre-modify the noun", e: "use a possessive to pre-modify the noun phrase", f: "use an article to pre-modify the noun",
+                g: "use a demonstrative to pre-modify the noun", h: "use an adverbial to post-modify the verb",
+                i: "use an infinitive phrase to post-modify the verb", j: "use an article to pre-modify the noun"
+            },
+            answers: {
+                a: ["the king of scotland"], b: ["many"], c: ["unfortunately"], d: ["a"], e: ["his"], f: ["a"], g: ["that"], h: ["again and again"],
+                i: ["to get back his kingdom"], j: ["the"]
+            }
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    const studentAnswers = {}; 
+    const evaluatedQuestions = {}; 
+
+    const container = document.getElementById("questionContainer");
+    const jumpSelect = document.getElementById("jumpSelect");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const scoreBoard = document.getElementById("scoreBoard");
+
+    function initDropdown() {
+        jumpSelect.innerHTML = "";
+        questionsData.forEach((q, idx) => {
+            let opt = document.createElement("option");
+            opt.value = idx;
+            opt.innerText = `Question ${q.id}`;
+            jumpSelect.appendChild(opt);
+        });
+    }
+
+    function renderQuestion() {
+        const q = questionsData[currentQuestionIndex];
+        jumpSelect.value = currentQuestionIndex;
+        
+        prevBtn.disabled = currentQuestionIndex === 0;
+        nextBtn.disabled = currentQuestionIndex === questionsData.length - 1;
+
+        let passageHtml = q.passage;
+        const keys = ['a','b','c','d','e','f','g','h','i','j'];
+        const isSubmitted = evaluatedQuestions[q.id] || false;
+        
+        keys.forEach(k => {
+            const hint = q.hints[k] || "modifier";
+            const storageKey = `${q.id}_${k}`;
+            const savedVal = studentAnswers[storageKey] || "";
+            
+            let gapReplacement = "";
+            if (!isSubmitted) {
+                gapReplacement = `
+                    <span class="gap-container">
+                        <strong>(${k})</strong>
+                        <input type="text" class="gap-input" data-gap="${k}" data-qid="${q.id}" id="input_${k}" value="${savedVal}">
+                        <span class="gap-label">[${hint}]</span>
+                    </span>
+                `;
+            } else {
+                const canonicalOptions = q.answers[k].map(a => a.toLowerCase().trim());
+                const isCorrect = canonicalOptions.includes(savedVal.toLowerCase().trim());
+                const primaryOfficialAns = q.answers[k][0];
+                
+                if (isCorrect) {
+                    gapReplacement = `
+                        <span class="gap-container">
+                            <strong>(${k})</strong>
+                            <span class="corrected-ans">${savedVal}</span>
+                            <span class="gap-label">[${hint}]</span>
+                        </span>`;
+                } else {
+                    gapReplacement = `
+                        <span class="gap-container">
+                            <strong>(${k})</strong>
+                            ${savedVal ? `<span class="wrong-ans">${savedVal}</span>` : ''}<span class="corrected-ans">${primaryOfficialAns}</span>
+                            <span class="gap-label">[${hint}]</span>
+                        </span>`;
+                }
+            }
+            passageHtml = passageHtml.replace(`[${k}]`, gapReplacement);
+        });
+
+        container.innerHTML = `
+            <h3>Question No. ${q.id}</h3>
+            <div class="passage">${passageHtml}</div>
+        `;
+
+        if (!isSubmitted) {
+            setupInputListeners();
+            scoreBoard.style.display = "none";
+            document.getElementById("evaluateActionBtn").disabled = false;
+        } else {
+            showQuestionScore(q);
+            document.getElementById("evaluateActionBtn").disabled = true;
+        }
+    }
+
+    function setupInputListeners() {
+        const inputs = Array.from(document.querySelectorAll('.gap-input'));
+        inputs.forEach((input, idx) => {
+            input.addEventListener('input', (e) => {
+                const sKey = `${e.target.dataset.qid}_${e.target.dataset.gap}`;
+                studentAnswers[sKey] = e.target.value;
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === "ArrowRight") {
+                    if (idx < inputs.length - 1) inputs[idx + 1].focus();
+                } else if (e.key === "ArrowLeft") {
+                    if (idx > 0) inputs[idx - 1].focus();
+                } else if (e.key === "Enter") {
+                    e.preventDefault();
+                    evaluateCurrentQuestion();
+                }
+            });
+        });
+    }
+
+    function evaluateCurrentQuestion() {
+        const q = questionsData[currentQuestionIndex];
+        evaluatedQuestions[q.id] = true;
+        renderQuestion();
+    }
+
+    function showQuestionScore(q) {
+        let correctAnswersCount = 0;
+        const keys = ['a','b','c','d','e','f','g','h','i','j'];
+
+        keys.forEach(k => {
+            const sKey = `${q.id}_${k}`;
+            const studentVal = (studentAnswers[sKey] || "").toLowerCase().trim();
+            const officialValidChoices = q.answers[k].map(opt => opt.toLowerCase().trim());
+            
+            if (officialValidChoices.includes(studentVal)) {
+                correctAnswersCount++;
+            }
+        });
+
+        const marksObtained = correctAnswersCount * 0.5;
+        scoreBoard.style.display = "block";
+        scoreBoard.innerHTML = `
+            <div class="score-text">Question ${q.id} Evaluation Result</div>
+            <p style="margin: 5px 0 0 0; font-size:1.05rem;">
+                Score: <strong>${marksObtained.toFixed(1)} / 5.0</strong> (Correct: <strong>${correctAnswersCount} / 10</strong>)
+            </p>
+        `;
+    }
+
+    function resetCurrentQuestion() {
+        const q = questionsData[currentQuestionIndex];
+        const keys = ['a','b','c','d','e','f','g','h','i','j'];
+        
+        keys.forEach(k => {
+            delete studentAnswers[`${q.id}_${k}`];
+        });
+        delete evaluatedQuestions[q.id];
+        
+        renderQuestion();
+    }
+
+    function navigate(direction) {
+        currentQuestionIndex += direction;
+        renderQuestion();
+    }
+
+    function jumpToQuestion(index) {
+        currentQuestionIndex = parseInt(index);
+        renderQuestion();
+    }
+
+    initDropdown();
+    renderQuestion();
+</script>
+
+</body>
+</html>

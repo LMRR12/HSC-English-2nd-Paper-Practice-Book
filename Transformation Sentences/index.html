@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSC Sentence Transformation Practice Platform</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success: #16a34a;
+            --wrong: #dc2626;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 2rem 1rem; }
+        .container { max-width: 800px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 2rem; }
+        header h1 { color: var(--primary-color); font-size: 2.2rem; margin-bottom: 0.5rem; }
+        header p { color: var(--text-muted); }
+        
+        .navigation-panel {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card-bg); padding: 1rem; border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+        select {
+            padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: white; font-size: 1rem; color: var(--text-main);
+            cursor: pointer; outline: none; width: 50%;
+        }
+        button {
+            padding: 0.6rem 1.2rem; border: none; border-radius: 6px;
+            background-color: var(--primary-color); color: white;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { background-color: var(--border-color); color: var(--text-muted); cursor: not-allowed; }
+
+        .quiz-card {
+            background: var(--card-bg); border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); padding: 2rem;
+            border: 1px solid var(--border-color); margin-bottom: 1.5rem;
+        }
+        .context-passage {
+            background-color: #f1f5f9; padding: 1rem; border-left: 4px solid var(--primary-color);
+            border-radius: 4px; margin-bottom: 1.5rem; font-style: italic; color: #334155;
+        }
+        .sub-question { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px dashed var(--border-color); }
+        .sub-question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .question-text { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem; }
+        textarea {
+            width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color);
+            font-size: 1rem; resize: vertical; min-height: 60px; outline: none; transition: border-color 0.2s;
+        }
+        textarea:focus { border-color: var(--primary-color); }
+        
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 6px; display: none; }
+        .feedback.correct { display: block; background-color: #dcfce7; border-left: 4px solid var(--success); color: #14532d; }
+        .feedback.wrong { display: block; background-color: #fee2e2; border-left: 4px solid var(--wrong); color: #7f1d1d; }
+        .official-ans { margin-top: 0.5rem; font-weight: 500; color: #475569; background: #f8fafc; padding: 0.5rem; border-radius: 4px; border: 1px solid #e2e8f0; }
+        
+        .actions-panel { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem; }
+        .score-board { text-align: center; font-weight: bold; font-size: 1.2rem; color: var(--primary-color); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Transformation of Sentences</h1>
+        <p>Prepared By Luran Meahda Ramiz Rafin</p>
+    </header>
+
+    <div class="navigation-panel">
+        <button id="prevBtn" onclick="navigate(-1)">← Previous</button>
+        <select id="jumpMenu" onchange="jumpToQuestion(this.value)"></select>
+        <button id="nextBtn" onclick="navigate(1)">Next →</button>
+    </div>
+
+    <div class="quiz-card">
+        <div class="context-passage" id="contextPassage"></div>
+        <div id="subQuestionsContainer"></div>
+        
+        <div class="actions-panel">
+            <div id="scoreDisplay" class="score-board" style="margin-right: auto; align-self: center;"></div>
+            <button style="background-color: #475569;" onclick="resetCurrentQuestion()">Reset</button>
+            <button onclick="evaluateCurrentQuestion()">End Test & Show Results</button>
+        </div>
+    </div>
+</div>
+
+<!-- Importing the full database file safely -->
+<script src="quiz-data.js"></script>
+
+<script>
+    let currentIndex = 0;
+
+    function init() {
+        const selectMenu = document.getElementById('jumpMenu');
+        quizData.forEach((q, index) => {
+            const opt = document.createElement('option');
+            opt.value = index;
+            opt.textContent = q.title;
+            selectMenu.appendChild(opt);
+        });
+        loadQuestion(0);
+    }
+
+    function loadQuestion(index) {
+        currentIndex = index;
+        document.getElementById('jumpMenu').value = index;
+        
+        document.getElementById('prevBtn').disabled = index === 0;
+        document.getElementById('nextBtn').disabled = index === quizData.length - 1;
+
+        const currentData = quizData[index];
+        document.getElementById('contextPassage').textContent = currentData.context;
+        document.getElementById('scoreDisplay').textContent = "";
+
+        const container = document.getElementById('subQuestionsContainer');
+        container.innerHTML = "";
+
+        currentData.items.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = 'sub-question';
+            div.innerHTML = `
+                <div class="question-text">(${item.key}) ${item.text} <span style="color:var(--primary-color);">[${item.instruction}]</span></div>
+                <div class="input-group">
+                    <textarea id="input_${currentIndex}_${idx}" placeholder="Type your answer..."></textarea>
+                </div>
+                <div class="feedback" id="feedback_${currentIndex}_${idx}"></div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function navigate(direction) {
+        let targetIndex = currentIndex + direction;
+        if (targetIndex >= 0 && targetIndex < quizData.length) loadQuestion(targetIndex);
+    }
+
+    function jumpToQuestion(index) {
+        loadQuestion(parseInt(index));
+    }
+
+    function evaluateCurrentQuestion() {
+        const currentData = quizData[currentIndex];
+        let score = 0;
+
+        currentData.items.forEach((item, idx) => {
+            const inputField = document.getElementById(`input_${currentIndex}_${idx}`);
+            const feedbackDiv = document.getElementById(`feedback_${currentIndex}_${idx}`);
+            
+            // Clean strings to prevent failing due to extra spaces, case mismatch or double spaces
+            const userAns = inputField.value.trim().toLowerCase().replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, " ");
+            let isCorrect = false;
+            
+            for (let answer of item.answers) {
+                const cleanedOfficial = answer.trim().toLowerCase().replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, " ");
+                if (userAns === cleanedOfficial) {
+                    isCorrect = true;
+                    break;
+                }
+            }
+
+            if (isCorrect) {
+                score++;
+                feedbackDiv.className = "feedback correct";
+                feedbackDiv.innerHTML = `<strong>✓ Correct!</strong>`;
+            } else {
+                feedbackDiv.className = "feedback wrong";
+                feedbackDiv.innerHTML = `
+                    <strong>✗ Incorrect / Review Match</strong>
+                    <div class="official-ans"><strong>Official Answer:</strong><br>${item.answers.join(' <br><strong>or</strong><br> ')}</div>
+                `;
+            }
+        });
+
+        document.getElementById('scoreDisplay').textContent = `Marks: ${score} / ${currentData.items.length}`;
+    }
+
+    function resetCurrentQuestion() { loadQuestion(currentIndex); }
+    window.onload = init;
+</script>
+</body>
+</html>
