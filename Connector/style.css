@@ -1,0 +1,598 @@
+/*==================================================
+HSC ENGLISH 2ND PAPER PRACTICE BOOK
+CONNECTORS PAGE
+==================================================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    font-family:'Inter',sans-serif;
+
+    background:linear-gradient(180deg,#edf4ff,#ffffff);
+
+    color:#1e293b;
+
+    line-height:1.7;
+
+    min-height:100vh;
+
+}
+
+/*==================================================
+BACKGROUND DECORATION
+==================================================*/
+
+.background-blur{
+
+    position:fixed;
+
+    border-radius:50%;
+
+    filter:blur(90px);
+
+    z-index:-1;
+
+    opacity:.35;
+
+}
+
+.blur1{
+
+    width:350px;
+    height:350px;
+
+    background:#60a5fa;
+
+    top:-120px;
+    left:-120px;
+
+}
+
+.blur2{
+
+    width:320px;
+    height:320px;
+
+    background:#93c5fd;
+
+    bottom:-120px;
+    right:-100px;
+
+}
+
+/*==================================================
+HERO
+==================================================*/
+
+.hero{
+
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+
+    color:white;
+
+    padding:70px 20px;
+
+    text-align:center;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.hero h1{
+
+    font-size:42px;
+
+    font-weight:800;
+
+}
+
+.hero h2{
+
+    margin-top:10px;
+
+    font-size:28px;
+
+    font-weight:600;
+
+}
+
+.hero p{
+
+    margin-top:18px;
+
+    font-size:18px;
+
+    opacity:.92;
+
+}
+
+/*==================================================
+STATS
+==================================================*/
+
+.stats{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:22px;
+
+    margin-top:40px;
+
+}
+
+.stat-card{
+
+    background:rgba(255,255,255,.15);
+
+    backdrop-filter:blur(12px);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    border-radius:18px;
+
+    width:150px;
+
+    padding:20px;
+
+}
+
+.number{
+
+    display:block;
+
+    font-size:30px;
+
+    font-weight:800;
+
+}
+
+.text{
+
+    font-size:14px;
+
+    opacity:.9;
+
+}
+
+/*==================================================
+BUTTON
+==================================================*/
+
+.practice-btn{
+
+    display:inline-block;
+
+    margin-top:45px;
+
+    padding:15px 34px;
+
+    border-radius:40px;
+
+    background:white;
+
+    color:#2563eb;
+
+    text-decoration:none;
+
+    font-weight:700;
+
+    transition:.3s;
+
+}
+
+.practice-btn:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+
+}
+
+/*==================================================
+CONTAINER
+==================================================*/
+
+.container{
+
+    width:min(1200px,92%);
+
+    margin:50px auto;
+
+}
+
+/*==================================================
+TOOLBAR
+==================================================*/
+
+.toolbar{
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:28px;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.08);
+
+    margin-bottom:35px;
+
+}
+
+/*==================================================
+SEARCH
+==================================================*/
+
+#searchBox{
+
+    width:100%;
+
+    padding:18px 22px;
+
+    font-size:16px;
+
+    border:2px solid #dbeafe;
+
+    border-radius:14px;
+
+    outline:none;
+
+    transition:.25s;
+
+    margin-bottom:24px;
+
+}
+
+#searchBox:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 5px rgba(37,99,235,.12);
+
+}
+
+/*==================================================
+CATEGORY BUTTONS
+==================================================*/
+
+.categories{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+}
+
+.categories button{
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:999px;
+
+    cursor:pointer;
+
+    background:#eaf2ff;
+
+    color:#2563eb;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.categories button:hover{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.categories button.active{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+/*==================================================
+RULE GRID
+==================================================*/
+
+#rulesContainer{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+
+    gap:30px;
+
+}
+
+/*==================================================
+RULE CARD
+==================================================*/
+
+.rule-card{
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:28px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+    border:1px solid #eef2ff;
+
+}
+
+.rule-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 20px 50px rgba(0,0,0,.12);
+
+}
+
+/*==================================================
+RULE NUMBER
+==================================================*/
+
+.rule-number{
+
+    display:inline-block;
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:6px 14px;
+
+    border-radius:999px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+
+}
+
+/*==================================================
+TITLE
+==================================================*/
+
+.rule-title{
+
+    font-size:30px;
+
+    color:#1d4ed8;
+
+    font-weight:800;
+
+    margin-bottom:10px;
+
+}
+
+/*==================================================
+CATEGORY
+==================================================*/
+
+.category{
+
+    display:inline-block;
+
+    padding:6px 14px;
+
+    border-radius:999px;
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
+    font-weight:700;
+
+    margin-bottom:22px;
+
+}
+
+/*==================================================
+SECTION HEADINGS
+==================================================*/
+
+.heading{
+
+    font-size:15px;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+    margin-top:22px;
+
+    margin-bottom:10px;
+
+}
+
+/*==================================================
+STRUCTURE
+==================================================*/
+
+.structure-box{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:8px 14px;
+
+    background:#eff6ff;
+
+    color:#1d4ed8;
+
+    border:1px solid #bfdbfe;
+
+    border-radius:999px;
+
+    font-family:Consolas, monospace;
+
+    font-size:15px;
+
+    font-weight:700;
+
+}
+
+/*==================================================
+EXAMPLE
+==================================================*/
+
+.example{
+
+    margin-top:10px;
+
+    background:#ecfdf5;
+
+    border-left:5px solid #16a34a;
+
+    padding:16px;
+
+    border-radius:10px;
+
+    font-style:italic;
+
+}
+
+/*==================================================
+TIP
+==================================================*/
+
+.tip{
+
+    margin-top:10px;
+
+    background:#fff8db;
+
+    border-left:5px solid #f59e0b;
+
+    padding:16px;
+
+    border-radius:10px;
+
+}
+
+/*==================================================
+NO RESULT
+==================================================*/
+
+.no-result{
+
+    grid-column:1/-1;
+
+    text-align:center;
+
+    background:white;
+
+    padding:60px;
+
+    border-radius:18px;
+
+    font-size:22px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+/*==================================================
+SCROLLBAR
+==================================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#eef2ff;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#2563eb;
+
+    border-radius:50px;
+
+}
+
+/*==================================================
+RESPONSIVE
+==================================================*/
+
+@media(max-width:768px){
+
+.hero h1{
+
+    font-size:32px;
+
+}
+
+.hero h2{
+
+    font-size:22px;
+
+}
+
+.rule-title{
+
+    font-size:24px;
+
+}
+
+.stats{
+
+    gap:15px;
+
+}
+
+.stat-card{
+
+    width:120px;
+
+}
+
+#rulesContainer{
+
+    grid-template-columns:1fr;
+
+}
+
+}

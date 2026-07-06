@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Connectors Practice - HSC</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --border: #cbd5e1;
+            --correct: #16a34a;
+            --incorrect: #dc2626;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #0f172a;
+            margin-top: 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        select, button {
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .passage-box {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .connector-input {
+            width: 120px;
+            padding: 2px 6px;
+            margin: 0 4px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .connector-input:focus {
+            outline: 2px solid var(--primary);
+            border-color: transparent;
+        }
+
+        .gap-label {
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .review-word {
+            display: inline-block;
+            font-weight: bold;
+            padding: 0 6px;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+
+        .word-correct { color: var(--correct); background: #f0fdf4; border: 1px solid #bbf7d0; }
+        .word-incorrect { color: var(--incorrect); background: #fef2f2; border: 1px solid #fecaca; text-decoration: line-through; }
+        .word-actual { color: var(--correct); font-style: italic; background: #f0fdf4; padding: 0 4px; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--surface);
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .score-display {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 15px 0 25px 0;
+            padding: 12px;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 6px;
+            border: 1px solid #bfdbfe;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Practice Sheet on Sentence Connectors - Luran Meahda Ramiz Rafin</h1>
+    
+    <div class="toolbar">
+        <div class="nav-group">
+            <button id="prevBtn" onclick="navigate(-1)">Previous</button>
+            <select id="questionSelect" onchange="jumpToQuestion(this.value)"></select>
+            <button id="nextBtn" onclick="navigate(1)">Next</button>
+        </div>
+        <button class="btn-primary" onclick="triggerSubmitPopup()">Finish Test</button>
+    </div>
+
+    <div id="exerciseContainer"></div>
+</div>
+
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+        <h3 style="margin-top:0;">Submit Test</h3>
+        <p>Do you want to finish the test?</p>
+        <div class="modal-buttons">
+            <button onclick="closeModal()">Cancel</button>
+            <button class="btn-primary" id="modalConfirmBtn" onclick="evaluateTest()">Yes, Finish</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const exercises = [
+        {
+            id: 1,
+            text: "Happiness is a relative term. So, it depends upon some factors. Contentment is the key to happiness. (a) contentment varies from person to person. (b) a beggar may be contented with only ten taka. But a wealthy person may be unsatisfied even after getting one million taka. It is said (c) contentment brings happiness. (d) we must learn to be contented with (e) we have. This learning is the simplest way to remain happy. At the same time, we must remember that our life is short and, in this short life, we cannot get everything what we want. If we want everything, we will not get happiness. (f) we will get frustrated and we will plunge into the world of sadness. (g) it is always better to be contented with what we have than to live in eternal sadness. (h) we should bear in mind that great men of the world didn't long for much wealth (i) they remained happy with a little. Thus, man can mould his won life worthy (j) he values the necessity of life morally.",
+            answers: { a: ["However", "But"], b: ["For example"], c: ["that"], d: ["So", "Therefore"], e: ["what"], f: ["At this", "Consequently", "Rather"], g: ["So", "Therefore"], h: ["Besides", "In addition"], i: ["rather"], j: ["if", "when"] }
+        },
+        {
+            id: 2,
+            text: "Mobile phone has added a new dimension to our daily life. It has brought the world closer to us. (a), it has made the worldwide communication easier. As a result, we can talk to others, chat with friends and send emails. (b) using social media has become handy with this device. (c) we can capture our special moments. In addition, many other apps help us learn new things. (d), mobile phone can show us the whole world through the Internet. (e), it has been a part and parcel in our life. We cannot go for a single day without using it. Nevertheless, it is not free from defects. It has some negative sides also. (f) excessive use of mobile phone may damage our hearing power. (g), it is a means of wasting time. (h), many crimes are being done with the use of mobiles. (i) harmful radiation from it may cause cancer to the users. Yet, we are not aware of these bad effects. (j). we will fall in health hazard.",
+            answers: { a: ["In fact"], b: ["Nowadays", "At present", "Moreover"], c: ["As a result"], d: ["Thus", "In this way"], e: ["So", "Therefore", "Hence", "In fact"], f: ["For example", "Firstly"], g: ["Secondly", "Next"], h: ["Again", "Thirdly"], i: ["Finally"], j: ["Consequently", "As a result"] }
+        },
+        {
+            id: 3,
+            text: "There is a proverb that every man is for himself. (a) it does not mean that he will be selfish, (b) only works for himself destroying the rights of others. (c) it means that he will protect his own right, without harming others. He will show love and respect (d) for his relatives and for other fellow beings. (e) sometimes we find some people (f) think of themselves only (g) snatch away other's part. Now, educational institutions don't mould our children's mind with moral lessons. (h) they are busy with how they can produce huge number of citizens with certificates. (i) these men are in their professions, they start thinking of them merely (j) indulge in personal gaining. So, our education needs to make us learn how to be a man for men.",
+            answers: { a: ["However", "But"], b: ["and"], c: ["Actually", "In fact", "Rather"], d: ["both"], e: ["Yet", "But", "However"], f: ["who"], g: ["and"], h: ["Rather", "Contrarily"], i: ["When"], j: ["and"] }
+        },
+        {
+            id: 4,
+            text: "A thing of beauty is a joy forever. As a matter of fact, a flower is a symbol of beauty and purity. (a) flower cultivation was rare in our country. (b) the scenario has been changed. Nowadays, people cultivate flowers not only for enjoying their beauty but also for earning money. (c) in big cities and towns, many flower shops have flourished and different types of flowers are sold there. (d) the demand of flowers is increasing day by day. (e), they are of great use to us. (f) flowers play an important role in making our mood cheerful and happy. (g), they are used for decorating homes. Moreover, flowers are regarded as a symbol of mourning and tribute to someone. (h) in many popular and social events, flowers are needed for stage or spot decoration. (i), we express our love and affection towards anyone with flowers. (j) flowers are a great source of honey, perfume, medicine and even food. Thus, the use of flowers in our daily life has become wide in different ways.",
+            answers: { a: ["Once", "Previously", "In the past"], b: ["At present", "But"], c: ["Recently", "For this reason"], d: ["Now"], e: ["Actually", "Truly speaking"], f: ["For example", "To begin with"], g: ["Traditionally", "Usually"], h: ["In addition", "Even"], i: ["Besides", "Also"], j: ["Most importantly", "Finally", "Undoubtedly"] }
+        },
+        {
+            id: 5,
+            text: "Most of the people of Bangladesh are not able to realise the importance of water. (a), millions of liters are wasted every year. While facing pure water crisis, (b) Government campaign may help to reduce unnecessary water consumption. (c) water is a very important resource for various reasons. (d) we need to drink clean water to survive. We need water to keep ourselves clean. (e) without water, we cannot grow crops. (f) we cannot provide animals with food. (g), Government should do more to make people recognize this. As the human population is growing, the climate is changing too. (h), there may not be enough water for everyone in future. (i), water treatment processes cost a lot and use a large amount of electricity. (j) reduced water consumption would save money and electricity for the future. It will reduce greenhouse gas emissions. Therefore we should encourage people to change wasteful habits now before it is too late.",
+            answers: { a: ["So", "Therefore"], b: ["only"], c: ["Actually"], d: ["For example"], e: ["Again", "Also"], f: ["Moreover", "Besides", "Finally"], g: ["So", "Therefore"], h: ["Consequently", "As a result"], i: ["Moreover", "However"], j: ["So", "This is why", "In fact", "Actually"] }
+        },
+        {
+            id: 6,
+            text: "Unemployment is a great curse. At present, all the countries of the world suffer from the curse. (a) nowhere in the world this problem is so acute as in our country. (b) there are many reasons behind it. (c) our country is industrially backward. (d), our traditional education system is not service-oriented. Thirdly, our students and youths have false sense of dignity. (e) they run after job only. (f) unemployment problem should be removed at any cost. (g) we want to remove it truly, our education system should be changed. And more mills and factories should be established. (h) the educated youth should change their attitude to life. (i) they can work in agriculture field, cultivate fish, grow vegetables, etc. (j) they can start small business. Above all self-employment is a possible solution to this great problem.",
+            answers: { a: ["But", "Truly speaking"], b: ["Obviously", "However"], c: ["Firstly", "First"], d: ["Secondly"], e: ["So", "Therefore"], f: ["However", "Anyway"], g: ["If"], h: ["At the same time"], i: ["And", "For instance"], j: ["Moreover"] }
+        },
+        {
+            id: 7,
+            text: "Everybody wants to be happy in life. Happiness is a relative term. In fact, it depends upon some factors. (a) contentment is the key to happiness. (b) contentment varies from person to person. (c), a beggar may be contented with only the taka. On the contrary, a wealthy person may be dissatisfied even after getting one million taka. (d) it is said that contentment brings happiness. (e) we must learn to be contented with what we have. (f) this learning is the simplest way to remain happy. Moreover, we must remember that our life is short (g) in this short life, we cannot get everything (h) we want. (i) we want everything, we will not get happiness. (j), we will get frustrated and we will plunge into the world of sadness. So, it is always better to be contented with what we have than to live in eternal sadness.",
+            answers: { a: ["First of all", "Firstly", "Mainly"], b: ["However", "But"], c: ["For example", "For instance"], d: ["Hence", "That's why", "For this reason"], e: ["Therefore", "So"], f: ["In fact"], g: ["and", "but"], h: ["that", "which"], i: ["If"], j: ["Rather"] }
+        },
+        {
+            id: 8,
+            text: "In life we want to be perfect. But, to attain perfection is impossible (a) man is basically imperfect. (b) we should try to be great. (c) it is not easy to be great because we have to attain certain virtues. First, we should be truthful (d) we have to be honest (e) truthfulness gives rise to many other virtues. (f) honest people are valued everywhere. (g) dishonest people are hated by all. Finally, we can conclude that to be great is more important than to be perfect. (h) the idea of perfection varies from person to person. (i) one's idea of perfection changes (j) learning how to be perfect is basically a lifelong deal. Yet the road to perfection is something that we learn and understand along this journey of life.",
+            answers: { a: ["because", "as"], b: ["However", "Rather", "Nevertheless"], c: ["As a matter of fact", "In fact", "But"], d: ["as", "because"], e: ["Also", "Besides"], f: ["because"], g: ["On the other hand", "On the contrary"], h: ["As a matter of fact", "that"], i: ["Again"], j: ["because"] }
+        },
+        {
+            id: 9,
+            text: "A journey is always a source of pleasure. (a) a journey by boat is more interesting than any other journey. Since Bangladesh is a land of rivers, it is very easy to enjoy a journey by boat here. During last autumn, our college was closed. (b) it was a suitable time for me to make a journey by boat. Then I proposed to some of my friends to join me and they at once accepted my proposal. (c) we made a plan. (d), we hired a boat and started journey at 11 am. We were very fortunate indeed as the boatman was very expert. (e) the weather was calm and quiet. (f) gentle breeze was slightly pushing the sail. So, we had no trouble during the journey. (g) we had a lot of enjoyment. (h), the boat was dancing on the small waves and it thrilled us a lot. (i), we also enjoyed a 'Bhatiali' song sung by the boatman. (j), we were delighted at the sights on either bank of the river. Finally when the sun was setting, the scene enchanted us very much.",
+            answers: { a: ["In fact"], b: ["So", "Therefore", "That's why"], c: ["Then", "Accordingly"], d: ["Next", "First"], e: ["Fortunately", "Also"], f: ["And then", "In addition"], g: ["As a result", "So"], h: ["At that time", "Then"], i: ["At the same time"], j: ["Moreover"] }
+        },
+        {
+            id: 10,
+            text: "Teaching is a noble profession. (a) to be a teacher, one must possess some noble qualities too. (b), he should be a student. (c) teaching is related to knowledge, he can't acquire knowledge (d) he is a student. (e) a teacher thinks that he knows everything, he can't be a good teacher. (f) thirst for knowledge is the second best quality of a teacher. (g) a teacher should be a psychologist. Different students have different ways of learning. (h) the teacher needs to teach his students by studying their psychology. Fourthly, a teacher should have good delivery power. (i) his voice should be clear and artistic. Moreover, a teacher should be an actor because he needs to behave according to the classroom situation. And (j) a teacher must be a good human being.",
+            answers: { a: ["In order", "So", "Therefore"], b: ["Firstly"], c: ["Since", "As"], d: ["unless"], e: ["If"], f: ["Secondly"], g: ["Thirdly"], h: ["Therefore", "So"], i: ["So", "For this", "Furthermore"], j: ["above all", "finally"] }
+        },
+        {
+            id: 11,
+            text: "Honesty is a noble virtue. The man (a) possesses this uncommon quality is the happiest man in the world. Truly speaking, a man should have trustworthiness (b) nobody believes a liar. A liar may prosper for the time being, (c) ultimately he goes to the dogs. (d) we should be honest in our life. It is believed that honesty is the best policy: (e) dishonesty is the sign of downfall. God helps those who are honest. (f) dishonest people are cursed. Childhood is the best time (g) children should be taught honesty. It is seen mat children follow their parents. (h) parents should be honest (i) they should be allowed to mix with those friends who are really honest. (j) parents should tell stories of honest people to children. For example, they can tell the story of honest people from history. Besides, parents should teach children how to distinguish between the right and the wrong. Accordingly, children build up their character. Thus, parents can show the path of honesty to children.",
+            answers: { a: ["who"], b: ["because", "as", "since"], c: ["but"], d: ["So", "Therefore"], e: ["On the other hand"], f: ["But"], g: ["when"], h: ["For this reason", "This is why"], i: ["and"], j: ["Moreover"] }
+        },
+        {
+            id: 12,
+            text: "Mobile phone is a miracle of modern science. It has brought about a revolutionary development in the arena of communication. (a) it has eliminated distance and promoted human relationship. (b) it helps to promote business. (c) gearing the pace of business, it ensures the smooth growth of economy. (d) it can solve many problems of mathematics. (e) it has become a daily necessity. (f) it is not free from demerits. Certainly, it becomes detrimental to the reckless users (g) the use of mobile phone by the teenagers has to be regulated. (h) they will go to ruin. Hence, if we want to save our young generation, we have to be more vigilant. (i) parents, teachers and neighbors can play positive role in this regard. At the same time, the people who are addicted to wanton use of mobile phone have to be more cautious. (j) they maintain abstinence, it will positively influence their offspring.",
+            answers: { a: ["Firstly", "Obviously", "Certainly"], b: ["Secondly", "Besides", "Moreover"], c: ["Apart from", "With a view to"], d: ["On top of this", "Additionally", "Besides"], e: ["Thus", "So", "Therefore", "As a result"], f: ["But", "However"], g: ["So"], h: ["Or", "Otherwise"], i: ["Especially", "Particularly"], j: ["If"] }
+        },
+        {
+            id: 13,
+            text: "My name is Amerigo. I am 13 years old (a) live on the street alone. My mother does not live with me. (b) she does not want me. (c) she told me to go away. (d) my mother is separated from my father. Now she is married to another man. Probably she is happy with him. (e) my father lives very far away. (f) I cannot go there. (g) I want to go to him, he doesn't take me either. I begged him to send some money (h) I could buy a bus ticket. I am still waiting (i) he hasn't answered. However, the streets are now my home. I used to do some works (j) collecting trash, selling ice-cream of a owner, etc. I sold ice-cream of the owner but he gave me nothing in return. As a result, I had to starve sometimes. In fact, my life is very hard without my parents.",
+            answers: { a: ["and"], b: ["Because", "Besides", "In fact"], c: ["Moreover", "Furthermore", "Rather"], d: ["Unfortunately", "Actually", "In fact"], e: ["On the other hand"], f: ["That's why", "So", "Therefore"], g: ["Though", "Although", "Even if"], h: ["so that", "in order that"], i: ["but", "yet"], j: ["such as", "for example"] }
+        },
+        {
+            id: 14,
+            text: "The Internet has transformed the way we live. (a) it has become an integral part of our life. On the other hand, this technology has brought us many benefits, (b), it has many negative sides. (c) the Internet, our communication systems have become much faster and more efficient. (d), we can make bank transactions and pay our bills from home now. (e) the Internet allows us to access health information easily and, (f) saves many lives. (g) our learning opportunities have greatly increased, thanks to digital technologies. (h) the Internet is not an unmixed blessing. (i) its harmful effects far outweigh its benefits. (j) we should take precautions about using this technology. First, we must be careful not to become addicted to Internet browsing. Second, we should keep an eye on our younger family members because there are potential dangers in the virtual world. Besides, online gambling and cyberbullying are very common on the Internet nowadays. So, it can be said that the Internet technology is doing us more harm than good.",
+            answers: { a: ["Now", "In fact"], b: ["On the other hand", "On the contrary", "But"], c: ["Due to", "Because of", "By virtue of", "Through"], d: ["For example", "Firstly"], e: ["Besides", "Secondly"], f: ["thus", "definitely"], g: ["In addition", "Thirdly", "Moreover"], h: ["However", "But", "Nevertheless"], i: ["Unfortunately", "Sadly", "In fact"], j: ["So", "Therefore"] }
+        },
+        {
+            id: 15,
+            text: "Junk food is very popular nowadays. (a) the children are very much fond of junk food. (b) do we know what junk food actually is? Junk food is such kind of processed food that has been produced for its pungent taste rather than for its health value. (c) it contains high calories, salt, added sugar, saturated fat, etc. (d) its nutritional value is very low. (e) its appearance is very appealing and mouth-watering. So, it can attract anybody. (f) it is harmful for health. (g) it consists of harmful substances, it may lead to a higher risk of obesity, cardiovascular diseases and other chronic health problems. (h) it can also affect brain. Besides, addiction to it may even result in the rejection of healthier foods such as fruits, vegetables, salads, etc. Furthermore, the sugar used in junk food can damage our teeth and skin. (i), we should avoid having junk food. (j) we should remember that health is the root of all happiness.",
+            answers: { a: ["Especially", "In fact", "Generally"], b: ["But", "However"], c: ["In fact"], d: ["And", "On the other hand"], e: ["But", "Rather"], f: ["However", "But", "Actually"], g: ["Since", "As"], h: ["Moreover", "Furthermore"], i: ["So", "Therefore"], j: ["Finally", "Above all"] }
+        },
+        {
+            id: 16,
+            text: "Self-confidence is essential to attain success in life. (a) a person having self-confidence has won half of the battle. Self-confidence enables a man to prosper by creating some other virtues requisite for success. (b) when a self-confident man fails to attain success, he becomes determined to reach his goal. This determination gives rise to some other virtues in him. (c), he becomes diligent. He does not yield to failure. (d) he endeavours more in the process. (e) he becomes more sincere in his work. (f) he becomes successful. (g) a man devoid of self-confidence stumbles at every step, (h) he loses vitality to go ahead. (i) he does not try once more. (j) he is heard to curse his fortune. But the brave who have self-confidence can have their names enlisted in the list of the greatest men on earth. Indeed, this process has been going on since prehistoric time. So, we must follow the track of the greatest people. Otherwise, we have to be failure in life and lament.",
+            answers: { a: ["In fact", "Actually"], b: ["For example"], c: ["Firstly"], d: ["Rather", "Instead", "Moreover"], e: ["Secondly"], f: ["Finally", "As a result", "Eventually"], g: ["On the other hand"], h: ["so", "and", "therefore"], i: ["Therefore", "Consequently"], j: ["Instead", "Rather"] }
+        },
+        {
+            id: 17,
+            text: "Time and tide wait for none. (a), no one can stop the onward march of time. (b) it is very important to value our time. Moreover, if time once has gone, we cannot regain it. So, we should not waste a single moment in vain. (c) we should make proper use of every single moment of our life. (d) the students should understand the value of time. But, it is a matter of great regret that some of the students pass away their valuable time in Facebook. (e) they kill their time, (f) they cannot prepare their lessons well. (g) they always have a poor preparation for the examination. (h) they cannot do well in the examination. (i) they do not stop wasting time. (j) they continue to waste their time using different social media sites till it is too late for them.",
+            answers: { a: ["In fact", "Therefore"], b: ["So"], c: ["Rather", "Instead"], d: ["Especially"], e: ["In this way", "Thus"], f: ["and"], g: ["As a result", "So"], h: ["Consequently", "So", "And"], i: ["Nevertheless", "Still"], j: ["Rather"] }
+        },
+        {
+            id: 18,
+            text: "Time, by its very nature, is fleeting. Time once gone is gone forever. (a) the sincere people realize the value of time: (b) not everyone is aware of the value of time. It is seen that many of us waste time. (c) we realize the significance of lost time when it is too late. (d) we suffer in life, (e), all of us should make the best use of time. Proper time management is the key to success in student life. (f) we find that an ideal student is the one who makes the best use of time. (g) a lazy student fails to make the grade as he kills time. (h) the teachers advise their students not to waste time. (i), they warn the students against their addiction to social networking sites and gaming. Students should follow the advice of their teachers. (j) they will suffer in the long run.",
+            answers: { a: ["Only"], b: ["But"], c: ["Unfortunately", "Gradually"], d: ["Thus", "As a result"], e: ["So"], f: ["For example"], g: ["On the contrary"], h: ["That's why"], i: ["Moreover", "Besides"], j: ["Otherwise"] }
+        },
+        {
+            id: 19,
+            text: "The greatness of a book depends largely on the acceptability among the readers. (a) we read a book (b) once, we can discover many things in it. (c) basing on one reading, we cannot judge the standard of a book. (d) a book is praised greatly, we have no doubt about the greatness of the book. (e) the first reading we may not understand a book. But if it is read more than once, we will see (f) it was read and praised. So, the great books are those (g) have passed the test of time. The appeal of a great book doesn't decrease. (h) the greatness of the book is newly felt (i) time passes. (j) a great book is widely read and reread by people all over the world.",
+            answers: { a: ["If", "When"], b: ["for", "only"], c: ["By", "But", "However"], d: ["When", "If"], e: ["Through", "At", "During", "After"], f: ["why"], g: ["that", "which"], h: ["Instead", "However", "Rather"], i: ["when", "as"], j: ["So", "Therefore", "In fact", "That is why"] }
+        },
+        {
+            id: 20,
+            text: "A cyclone is a devastating storm in Bangladesh that moves at a high speed. It causes immense harm to people and property. (a) the inhabitants of coastal regions are the main victims of cyclones. (b) the cyclone of Bangladesh originates from the Bay of Bengal. (c) it is accompanied by thunders and heavy showers. Beforehand unbearable heat is felt for a few days. (d) one day, the sky becomes terribly dark and strong winds begin to blow. (e) a terrible situation is created that lasts for hours. (f) it causes a great havoc causing death to people and other animals. Dwelling houses are blown away. The cyclone is followed by scarcity of food and outbreak of various diseases. (g) the great loss, caused by cyclone can be reduced. (h) prior warning can be given to people using modern technology of weather forecast. (i), people and domestic animals of the cyclone-prone areas can be shifted to cyclone shelters. (j) a quick relief work and medical facilities should be ensured.",
+            answers: { a: ["Generally", "Usually", "Specifically", "Especially"], b: ["Actually", "Mainly", "Obviously"], c: ["Moreover", "Also"], d: ["As a result", "Suddenly", "Later"], e: ["Then", "Subsequently", "Ultimately"], f: ["Consequently", "Eventually"], g: ["Actually", "However"], h: ["Firstly"], i: ["Secondly"], j: ["Finally", "Moreover"] }
+        },
+        {
+            id: 21,
+            text: "Leisure is the moment (a) a man is totally free from his work. In leisure, a man is (b) free from work but also from worries and tension. It is a time (c) a man is his own master and the mind is relaxed (d) the body is at rest. Our life is full of duties. By performing our duties one after another, it seems (e) our life is an exhausting business. This is, the tragedy of our life that we cannot avoid our work and worries. (f) leisure helps us to break this chain and enable us to refresh ourselves and revive our spirit. Leisure breaks the monotony of existence with a touch of variety. (g) we look into developed countries, we will see that people love to spend their leisure in different ways. They never idle away their leisure time. It is seen that some people love to go for travelling, some enjoy sight-seeing in different places. (h) some people spend their free time playing different types of games. (i) leisure is always a source of joy. (j), everybody should try to find leisure to enjoy it to make the life happy and peaceful.",
+            answers: { a: ["when"], b: ["not only"], c: ["when"], d: ["and", "as", "as well as"], e: ["like", "that"], f: ["But"], g: ["If"], h: ["And"], i: ["Therefore", "Thus"], j: ["Thus", "To sum up", "So", "Therefore"] }
+        },
+        {
+            id: 22,
+            text: "Health is the root of all happiness, can be enjoyed taking adequate care of body and mind. People (a) are always under mental stress and suffer from anxieties cannot enjoy a good health. (b) to enjoy good health, it is also necessary to keep our mind sound. Doctors say that simple and carefree life is more conducive to health. Many people, (c), are not aware of health rules. They (d) take physical exercise (e) take proper food. (f), a huge number of people of our country live below poverty line. They cannot afford to eat good food. (g) they cannot enjoy good health. (h) awareness about health rules and following them are very important in maintaining good health. (i) only healthy people can contribute to the national development. (j) we must be careful of our health.",
+            answers: { a: ["who"], b: ["So"], c: ["however"], d: ["neither"], e: ["nor"], f: ["In fact", "Moreover"], g: ["So", "Consequently"], h: ["In fact"], i: ["Because"], j: ["So", "Therefore", "Hence"] }
+        },
+        {
+            id: 23,
+            text: "Early rising is one of the best habits (a) a man can posses. The benefits of early rising are many. (b) if we get up early, we get enough time to work. (c) we can enjoy the fresh air of the morning which refreshes our body and mind. (d), we can take some exercises or a walk. (e) in the morning nature smiles with colourful flowers and chirping of birds. (f) early rising takes us to close contact with wonderful world of nature. (g) if we do not get up early in the morning, we will suffer a lot. (h) we do not have enough time to do our work. (i), we cannot finish our work in time. (j) late rising from bed tells upon our health. So, we should make a habit of early rising.",
+            answers: { a: ["that"], b: ["Firstly", "First"], c: ["Secondly"], d: ["Thirdly"], e: ["Besides", "Moreover"], f: ["Thus", "So"], g: ["On the contrary", "Contrarily", "On the other hand"], h: ["Firstly"], i: ["Secondly"], j: ["Thirdly"] }
+        },
+        {
+            id: 24,
+            text: "Scientists have always wondered (a) there is life anywhere out in the space. They have joined together in a major project called the communication with Extra Terrestrial Intelligence (b) seeks to establish contact with any other living beings in the universe. They are beaming out radio signals into the space. It was thought (c) there exists life on Mars. (d) two Viking spacecrafts (e) landed on Mars in 1976 did not provide much evidence of life there. The pictures sent by them showed that the Mars has a sky (f) the sky is red instead of a blue one like ours. Its gravity is about half (g) strong (h) that of Earth. The atmosphere is also much thinner than our planet. It has deserts, high mountains, canals, volcanoes, craters, etc. as well as summer and winter. (i) there are no trees, (j) life forms.",
+            answers: { a: ["whether", "if"], b: ["which"], c: ["that"], d: ["But"], e: ["that", "which"], f: ["however", "but"], g: ["as"], h: ["as"], i: ["But"], j: ["let alone"] }
+        },
+        {
+            id: 25,
+            text: "Once there lived a grasshopper and an ant. The ant was hard working. (a), the grasshopper was lazy. (b) he idled away his time dancing and sleeping. (c) he sometimes advised the ant not to work so hard. (d) the ant paid no need to the grasshopper. (e) he continued to work hard gathering food for the coming winter. (f) winter came, covering everything with snow. The surface of the earth went under the snow-cover. (g), the grasshopper could not find any food. (h), he had nothing in stock. (i), he went to the ant for help. The ant gave him some food for the day. (j), the long winter was ahead, and the grasshopper was really worried about his survival.",
+            answers: { a: ["But", "On the other hand", "On the contrary", "Conversely"], b: ["That's why", "So", "Therefore", "Hence"], c: ["Moreover", "Besides", "Furthermore"], d: ["But", "However", "Anyway"], e: ["Rather", "Instead", "Thus"], f: ["Then", "As usual", "Eventually", "Meanwhile", "At last"], g: ["That is why", "As a result", "Consequently", "As a consequence", "So"], h: ["Moreover", "Besides", "Unfortunately"], i: ["So"], j: ["Eventually", "Thus", "Finally"] }
+        },
+        {
+            id: 26,
+            text: "The old sailor spoke so strangely (a) the guest stood still. The feast began (b) the guest could hear the music and laughter, (c) for some reasons he could not join the others. The old man told him about his last journey on the sea. They had sailed away to the south (d) they had arrived in the cold grey sea. (e) the sea was frozen. (f) the ice was all around them. The big sails opened wide (g) the strong wind blew them quickly through the icy waters. The weather was very cold. (h) there were no birds and animals in that snow covered country. But one day the sailors saw an albatross flying towards the ship. All men were very pleased to see it and they gave it food and water. It came to the ship every day (i) they called it. (j) one day, the old sailor killed the bird and after that everyone had to undergo terrible sufferings.",
+            answers: { a: ["that"], b: ["and"], c: ["but"], d: ["until"], e: ["Moreover", "Naturally", "Even"], f: ["Again", "And", "Besides"], g: ["and", "as"], h: ["So", "Therefore", "And", "Hence"], i: ["when", "whenever"], j: ["Unfortunately", "But"] }
+        },
+        {
+            id: 27,
+            text: "Air is an important element of our environment. (a), clean air is essential for our life. (b) air is polluted in many ways. (c) one thing that pollutes air is smoke. Smoke is produced from different sources. (d) we make fire to cook food and it creates smoke. (e) buses and trucks plying in the roads emit smoke. (f) the burning of coal in the railway engine also produces smoke. (g) the mills and factories also produce a huge amount of smoke. (h) we melt tar for road constructions which produces black smoke. (i) all these smokes mix with the air and pollute it. (j), smoke from different sources is causing serious harm to our environment.",
+            answers: { a: ["Indeed", "Actually", "In fact", "Undoubtedly", "Certainly"], b: ["However"], c: ["For example", "As a matter of fact", "Certainy"], d: ["First", "Firstly"], e: ["Second", "Secondly"], f: ["Besides", "Likewise"], g: ["Third", "Thirdly", "Moreover"], h: ["In addition", "Moreover", "Furthermore"], i: ["As a result", "Consequently", "Ultimately", "Then"], j: ["So", "Thus", "Therefore"] }
+        },
+        {
+            id: 28,
+            text: "Drug addiction is a great curse of the present world. (a) a few things were used as drugs. (b) the number of drugs has increased. (c) cocaine, marijuana, opium, heroin, morphine, etc. (d), offer another world to the addicted ones. (e) they do not know that this addiction destroys the inner part of the body of addicted persons. (f) why do many people take drugs? The reasons are many. (g) some people are tempted by their so-called friends to have a taste of a drug. (h) they are trapped forever. (i), some people take drugs to forget the frustration of their life. (j) those who become drug addicts, cannot live a normal life.",
+            answers: { a: ["Previously", "In the past"], b: ["Nowadays", "Recently", "However", "On the contrary", "Gradually", "At present"], c: ["For example", "For instance"], d: ["All these"], e: ["But", "Unfortunately"], f: ["However", "Yet", "Then", "Still", "Any way"], g: ["Firstly", "Often"], h: ["Secondly", "But"], i: ["Thirdly", "Moreover"], j: ["Consequently", "Eventually", "At last", "Finally"] }
+        },
+        {
+            id: 29,
+            text: "Mobile phones are one of the most commonly used gadgets in today's world. (a) mobile phones have made our life easy and convenient. (b) they are a blessing till we use them judiciously, (c) they are very beneficial, they have some disadvantages. (d) excessive use of the device acts as a barrier to quality communication. (e), mobile phones waste a lot of time. (f), they are the causes of many ailments such as weak eyesight, strain on brain, headaches, dry eyes, sleeplessness and more (g) they have created a lack of privacy in people's lives. (h), we see how the device is both a boon and a bane. (i) we must not let mobile phones control our lives. (j) we must know when to draw the line.",
+            answers: { a: ["In fact", "Actually", "At present"], b: ["However", "Besides"], c: ["Though", "Although", "However"], d: ["For example"], e: ["Moreover", "Also"], f: ["At the same time", "Moreover"], g: ["Besides", "Furthermore"], h: ["Thus"], i: ["For this reason", "So", "Therefore", "Hence", "Thus"], j: ["So", "Besides", "Likewise", "In the same way", "Similarly"] }
+        },
+        {
+            id: 30,
+            text: "We want success (a) prosperity in life. (b) we do not do what are needed in achieving these. (c) without want to make our life glorious, we must follow some rules. (d), we have to be industrious. (e) we should be sincere in our activities. Some people think that hard work, success in life is impossible. (f) good luck is at the root of all achievements in life. (g) to them nothing is further from truth than it. (h) every success in life depends totally on our activities. (i) we spend time in idleness, we must suffer. (j) we should be honest in life because this virtue helps us greatly to gain our goal.",
+            answers: { a: ["and", "as well as"], b: ["But", "Yet", "However", "Still", "Unfortunately"], c: ["If"], d: ["First of all", "Firstly", "For example"], e: ["Indeed", "Actually", "In fact"], f: ["So", "Therefore", "Secondly"], g: ["But", "According"], h: ["Actually", "In fact", "Truly speaking", "No doubt"], i: ["If"], j: ["Besides", "Therefore", "That's why"] }
+        },
+        {
+            id: 31,
+            text: "Trees are a vital part of our environment. (a) they bear a great impact on the climate. (b), we are not kind and careful about them. (c) we destroy trees at random. (d) one day the country will bear the consequence of greenhouse effect. (e) ours is an agricultural country, our economy depends on agriculture. (f) trees play a vital role on our climate. (g) trees keep the soil strong and protect it. (h) trees save us from flood and many other natural calamities. (i) trees provide us with timber which is of great use specially in construction works and for making furniture. (j) trees are our best friends.",
+            answers: { a: ["In fact", "Naturally"], b: ["Unfortunately", "But", "However"], c: ["Rather", "Instead", "On the other hand"], d: ["As a result", "So", "Consequently"], e: ["Since", "As"], f: ["So", "Moreover"], g: ["For example", "For instance"], h: ["At the same time", "Besides"], i: ["Moreover", "In addition"], j: ["So", "Thus", "Therefore"] }
+        },
+        {
+            id: 32,
+            text: "Unemployment is a great problem in our country. (a), it is the burning question of the day. (b) almost all the countries of the world suffer from the curse of unemployment problem. (c) Bangladesh is the worst sufferer of this so-called problem. (d) nowhere in the world this problem is so acute as in our country. (e) there are many reasons behind it. (f) our country is industrially backward. (g) our system of education fails to give a student an independent start of life. (h), it has little provision for vocational training. (i), our students and youths have false sense of dignity. (j) they run after jobs blindly.",
+            answers: { a: ["In fact", "Actually", "Really"], b: ["At present", "Now"], c: ["But", "However"], d: ["It is true that", "Truly"], e: ["Obviously"], f: ["Firstly", "First"], g: ["Secondly"], h: ["Thirdly"], i: ["In addition", "Moreover", "Besides"], j: ["This is why", "That is why", "Hence", "So"] }
+        },
+        {
+            id: 33,
+            text: "We must be aware of the dangers of smoking. It is harmful to us in various ways. It causes various diseases (a) blood pressure, heart attack, bronchitis, cancer, etc. (b) it pollutes air. (c) smoking causes harm to (d) the smokers (e) the non-smokers who remain by them. (f) we should give up smoking. (g) it is (h) great an addiction to get rid of. (i) nothing is impossible for us. (j) we are determined to give up it, we can certainly do it.",
+            answers: { a: ["such as", "like"], b: ["At the same time"], c: ["Besides", "Moreover"], d: ["both", "not only"], e: ["and", "but also"], f: ["So", "Therefore"], g: ["However", "But"], h: ["too", "so"], i: ["Yet"], j: ["If"] }
+        },
+        {
+            id: 34,
+            text: "Education is essential in our life. (a) we are not properly educated, we cannot live an honourable life in society. It teaches us (b) how to earn but also how to spend. (c) it teaches (d) to live in amity with others in society. (e), we must get proper education. (f) we should bear in mind (g) education is not only what we learn at educational institutions but also (h) we learn outside these institutions. (i) education is a lifelong process. It begins just after our birth (j) ends only in death.",
+            answers: { a: ["If"], b: ["not only"], c: ["In fact"], d: ["how"], e: ["So"], f: ["On the other hand"], g: ["that"], h: ["what"], i: ["In fact", "In brief"], j: ["and"] }
+        },
+        {
+            id: 35,
+            text: "We should always keep in mind (a) all kinds of physical exercises are not suitable for all. (b) different people have different capacities. (c) harder exercise (d) wrestling and gymnastics are suitable for young people (e) they have energy to perform them. Weaker and old people should take the milder exercise (f) walking, jogging and free hand exercise. Over exercise never does good (g) it breaks down the health. (h), we should always take those exercises (i) would suit us. Physical exercise is important for the preservation of good health. It (j) builds our character.",
+            answers: { a: ["that"], b: ["Because"], c: ["For example", "For instance"], d: ["like"], e: ["as", "since", "because"], f: ["such as"], g: ["rather"], h: ["So"], i: ["which", "that"], j: ["also"] }
+        },
+        {
+            id: 36,
+            text: "Many people think that money can do everything in life. (a) it is a must for our life, it is not the thing that necessarily brings happiness. (b) it is absolutely a psychological matter. The person who is contented with what he gets and (c) he has is really happy. Money can do something with happiness (d) it cannot give us happiness. (e) we can see that the richest men of our society are not the happiest men. (f) they lead a life burdened with cares and anxieties (g) pass sleepless nights. (h), there are a large number of poor men (i) are happy and enjoy a sound sleep. (j) money cannot ensure happiness.",
+            answers: { a: ["Though"], b: ["Actually", "In fact", "Indeed"], c: ["what"], d: ["but"], e: ["So", "Therefore"], f: ["Instead", "Rather"], g: ["and"], h: ["On the other hand"], i: ["who"], j: ["Hence", "So", "Therefore"] }
+        },
+        {
+            id: 37,
+            text: "Man is a social being. (a) man cannot live alone. (b) man has been living together from time immemorial. Living in society is not an easy task. We have to follow certain rules and regulations of the society. (c) we should be cooperative. (d) we must help others when they are in need. (e), we have to be careful not to hurt others by our words or activities. (f), we must control our emotions and behave rationally towards others. (g), we should not think and live only for us. (h), we should always think and work for the betterment of the society. (i) we should remain prepared to sacrifice our lives for the greater interest of the society. (j) sacrificing our lives for the society makes us immortal.",
+            answers: { a: ["So"], b: ["In fact"], c: ["Firstly"], d: ["That is to say", "In other words"], e: ["Secondly"], f: ["Besides", "So"], g: ["Thirdly"], h: ["Rather", "Instead"], i: ["Finally"], j: ["In fact", "Thus"] }
+        },
+        {
+            id: 38,
+            text: "Honesty is a noble virtue. The man possessing this invaluable quality is the happiest man on earth, (a) To be honest, a man should have trustworthiness. (b) nobody trusts a liar. A liar may prosper for the time being. (c) he goes to the dogs. (d) we should be honest. It is said that honesty is the best policy. (e) dishonesty is the sign of downfall. God helps those who are honest. (f) dishonest people are cursed. (g) children should be taught honesty from childhood. It is widely observed that children follow their parents. (h) parents should be honest and upright in their business of life. (i) children should be allowed to mix with those friends who are honest. (j) they can mould their characters.",
+            answers: { a: ["indeed", "no doubt"], b: ["Because"], c: ["But consequently"], d: ["So", "Therefore"], e: ["On the other hand", "Whereas"], f: ["On the contrary"], g: ["So", "Therefore", "That is why"], h: ["In this connection", "As a matter of fact", "Hence"], i: ["Besides", "Moreover", "In addition"], j: ["Thus", "In this way"] }
+        },
+        {
+            id: 39,
+            text: "Water is a vital element of the environment (a) this element is polluted in many ways. (b), farmers use chemical fertilizers and insecticides in their field. (c) rain and flood wash away these chemicals, they get mixed with water in rivers, canals and ponds (d) pollute it. (e), mills and factories throw their poisonous chemicals and waste product into water. (f) water vehicles also pollute water by dumping food waste and human waste into it. (g) insanitary latrines and unsafe drains also contribute to water pollution. Water is called life. (h) we cannot allow this pollution to continue. We have to raise an awareness about it. (i) laws should be enforced strictly. (j) we fail to check water pollution, we will suffer.",
+            answers: { a: ["but"], b: ["Firstly", "First"], c: ["When", "As"], d: ["and"], e: ["Secondly", "Second", "Besides"], f: ["Thirdly", "Third"], g: ["In addition", "Besides", "Moreover"], h: ["That's why", "So", "Therefore"], i: ["In this respect", "Above all"], j: ["If"] }
+        },
+        {
+            id: 40,
+            text: "A lion was drinking water from a brook. (a) a lamb was also drinking water from the downstream of the same brook. The lion saw the lamb and decided to devour it. (b) he was thinking about how to accomplish his evil design. (c) he hit upon a plan. (d) the lion complained that the lamb was disturbing him by muddying water. But the lamb said that he was drinking water from downstream. (e) the questions of muddying water on his part did not arise here. (f) the lamb argued that it was the lion that was muddying the water for him as he was drinking water upstream. (g) the lion retorted that the lamb spoke ill of him a years ago. (h) the lamb said that he was not born a year ago. The lion grew into a rage. (i) he said that perhaps his father spoke ill of him last year. (j) the lion had the right to take revenge and kill the lamb.",
+            answers: { a: ["Incidentally"], b: ["So"], c: ["Then"], d: ["At first"], e: ["So"], f: ["Instead"], g: ["Then"], h: ["Again"], i: ["Therefore"], j: ["So"] }
+        },
+        {
+            id: 41,
+            text: "Bangladesh is mainly an agricultural country. (a), her economy and prosperity depend on agriculture. (b) our agriculture depends on the mercy of nature. (c), if there is sufficient rain, people can plough their lands and sow seeds in time. (d), they can reap a good harvest. (e) if it does not rain in time, the farmers cannot grow the crops easily and they do not have good harvest. (f), without water our agriculture is lifeless. The rain is not always beneficial to our agriculture. (g), sometimes it rains so much that it causes floods. (h) our crops go under water and most often, they are totally destroyed. (i) the farmers who constitute the most part of our professional people, lose everything. (j), we can safely conclude that our economy depends on rain.",
+            answers: { a: ["So"], b: ["Again", "But"], c: ["Hence"], d: ["As a result"], e: ["But", "On the other hand"], f: ["True that", "In fact"], g: ["For example", "For instance"], h: ["That's why", "As a result"], i: ["Consequently"], j: ["Therefore"] }
+        },
+        {
+            id: 42,
+            text: "The gifts of science are uncountable. (a) we cast our eyes, we see the wonders of science. Satellite TV channels are the means through (b) we can see and hear the events (c) are happening all over the world. (d) today we have specialized satellite channels on almost every interest. (e) people now have more choices and more freedom about television programmes. Satellite channels help us a lot by reporting on climatic conditions of different parts of the world. (f), we can be aware of storms, cyclones and tidal bores. (g) satellite channels are helping us to a great extent to enrich our own culture and tradition. (h) satellite channels are playing a favourable role, it is (i) doing harm to our young and new generation. (j) still we cannot deny the immense benefits we are getting from satellite channels.",
+            answers: { a: ["Wherever"], b: ["which"], c: ["that"], d: ["In fact", "Really"], e: ["Therefore"], f: ["Thus"], g: ["In addition", "Moreover", "Besides"], h: ["Although", "Though"], i: ["also"], j: ["But"] }
+        },
+        {
+            id: 43,
+            text: "Time is a special resource that you cannot store or save for future use. (a) it is managed properly to gain success. The skills of managing time properly are called time management skills. (b) these skills are necessary for job hunting and career success. (c) it is essential to improve these skills. (d) there are several useful strategies that can be used to improve your time management skills. (e) have clear goal in mind. (f) set up your priorities. (g) block out time for your high priority activities first and protect that time from interruptions. (h) set a deadline to do them and try your best to stick to it. (i) your skills will help you avoid stress in completing any work successfully. (j) reward yourself when the job is done.",
+            answers: { a: ["So", "But"], b: ["And"], c: ["This is why", "For this reason"], d: ["However"], e: ["First"], f: ["Secondly"], g: ["Thirdly"], h: ["Then"], i: ["In fact"], j: ["Thus", "In this way"] }
+        },
+        {
+            id: 44,
+            text: "Recreation means refreshment of body (a) mind. It denotes anything (b) pleasantly occupies one's time (c) work is done. Tension, (d) implies a disturbed state of things as contradistinguished from peaceful conditions. (e) life has now become tremendously complicated. (f), everybody has fallen a victim to tension. Tension may arise and abide in the mind of a man (g) he gets into the grip of mental strain and excitement. This is a state of continuous anxiety (h) eats into his vitals and causes him many serious problems (i) high blood pressure and heart disease. (j), we must not forget that we should try to live a tension-free life by resorting to adequate recreational activities of innocent nature.",
+            answers: { a: ["and"], b: ["that"], c: ["after"], d: ["on the other hand"], e: ["However"], f: ["As a result"], g: ["when"], h: ["which"], i: ["including"], j: ["So"] }
+        },
+        {
+            id: 45,
+            text: "A person (a) strongly supports and is ready to defend his country is a patriot. The feelings (b) the qualities of a patriot are known as patriotism. (c) the future of the country depends on its rulers. (d) the rulers are true patriot, they think of the interests of the country and the people. (e) there are some false patriots. They always like to take undue advantage of the situation. They are men of no principle and character (f) they have no high sense of morality and sacrifice. (g) people are the enemies of the nation. (h) a patriot thinks (i) of the national interest (j) of the international brotherhood.",
+            answers: { a: ["who"], b: ["and"], c: ["In fact"], d: ["If"], e: ["But"], f: ["Even"], g: ["Such"], h: ["On the other hand"], i: ["not only"], j: ["but also"] }
+        },
+        {
+            id: 46,
+            text: "Tension means mental, emotional (a) nervous strain. Almost the people of all walks suffer from tension in life. There are many reasons of tension. (b) the aim of the people is now very high, which is unattainable. He faces many difficulties to reach his destination. (c) this tendency puts him into tension. (d) the man obsessed with tension cannot perform his assigned duties in time and properly. (e) because of tension, he becomes ill-tempered (f) shows a sign of arrogance (g) tells upon his personal image. (h) a man can easily avoid tension. But how? Simple living and thinking is the best way of life. (i) we should be contented with (j) we have.",
+            answers: { a: ["or"], b: ["For example"], c: ["In fact"], d: ["As a result"], e: ["Moreover"], f: ["and"], g: ["which"], h: ["Nevertheless", "However"], i: ["So"], j: ["what"] }
+        },
+        {
+            id: 47,
+            text: "The thing (a) makes the world most worried is environment pollution. Our environment comprises the elements (b) surround us. Air, water, the sun, the moon, weather, climate (c) everything fall under the category of environment. (d) this environment is polluted and makes us too much worried. Viewing the present pollution around the world it seems (e) there lies the universal conflict between nature and man. Nature is used for serving the purpose of man. (f) it is antagonistic to man. Nature is, (g) wild and destructive to humans. (h) in course of time, population increases and scientific inventions also get increased. (i) human habitations, mills and factories have been increased. So, (j) all the species living in the world are in danger because of the toxic environment.",
+            answers: { a: ["which"], b: ["that"], c: ["and"], d: ["But"], e: ["that"], f: ["Again"], g: ["at times"], h: ["But"], i: ["As a result"], j: ["undoubtedly"] }
+        },
+        {
+            id: 48,
+            text: "Soil is necessary for life (a) most of our foods come from soil. It is true (b) some of us eat meat. (c) meat comes from animals that live on plants (d) again grow on soil. (e) we do not give food to soil, plants will become weak. (f) natural and inorganic manure are necessary for cultivation. (g) compost manure is widely used in cultivation. (h) agriculture scientists discourage the farmers to use pesticides, (i) they opt for a method of catching pests in traditional way. (j) it is not so popular.",
+            answers: { a: ["because", "as"], b: ["that"], c: ["But"], d: ["which"], e: ["If"], f: ["Both"], g: ["Nowadays"], h: ["But"], i: ["rather"], j: ["However", "Unfortunately"] }
+        },
+        {
+            id: 49,
+            text: "Gender discrimination in Bangladesh begins at birth. Most parents want to have children (a) they can, when they are older, supplement their family income and for help with the domestic work. In the existing socio-economic set-up, male children are best suited to this purpose. (b) girls are born to an unwelcome world. (c) they are assigned, (d) confined to domestic chores. Some of these girls may be at school. But all their work-domestic or academic stops (e) they are married off which is the prime concern of the parents about their daughters. (f) they are ill-treated by the in-laws (g) they fail to fulfill their demands. They have to do (h) the members of the in-law family want and (i) they want. (j) the girls can contribute a little to the socio-economic development of the nation.",
+            answers: { a: ["so that"], b: ["Unfortunately", "In fact"], c: ["Truly"], d: ["rather"], e: ["as soon as"], f: ["However", "But"], g: ["if"], h: ["whatever"], i: ["as"], j: ["So"] }
+        },
+        {
+            id: 50,
+            text: "There are a good number of reasons why students in Bangladesh fail in English. (a), English is a foreign language. (b) students have no good feeling with English. (c) teaching a foreign language becomes very difficult when the learners are not mentally prepared to receive it. (d) a teacher of English can hardly find out a technique suitable for all. (e), they fail to make the language learning interesting. (f) the motto of the questions in public examinations inspires memorizing rather than learning the language. (g) students can be successful in English if teachers are trained well. Students should be encouraged to learn four skills of language. The four skills of language are speaking, listening, reading, and writing. Every teacher should put emphasis on the four skills of language. (h), they should give importance to communicative approach. (i) spontaneous communication of a language helps one learn it easily. (j) every student should be involved in communicative approach.",
+            answers: { a: ["Firstly"], b: ["Secondly"], c: ["Thirdly"], d: ["Fourthly"], e: ["As a result"], f: ["Besides"], g: ["However"], h: ["Most importantly"], i: ["Additionally"], j: ["Lastly"] }
+        },
+        {
+            id: 51,
+            text: "Man's life is short (a) in the short span of life (b) someone utilizes his time properly, he can make his life meaningful. (c) if a man is careless about time, he can never succeed in life. From the creation of the universe, time has started his journey never to stop. (d) if someone wants to do some work, he has to utilize time. The great men of the world have used their time properly. (e) it is their proper uses of time by (f) they have become ever memorable. Nothing can be more harmful (g) the wastage of time. (h) killing time is similar to committing suicide. (i) a man wastes his time, he can do nothing valuable in life. He must find the meaning of his life by doing something valuable for his fellow being. (j) contribution everyone must use his time properly.",
+            answers: { a: ["but"], b: ["if"], c: ["On the other hand"], d: ["Therefore"], e: ["In fact"], f: ["which"], g: ["than"], h: ["Truly speaking"], i: ["If"], j: ["In order to"] }
+        },
+        {
+            id: 52,
+            text: "Education is essential for any kind of development. (a) no development is possible without education. (b) most of the people in Bangladesh are illiterate. (c), most of the people here live below the poverty line. (d) they cannot afford to send their children to school. The uneducated have no knowledge of health and sanitation. (e), they are not aware of population control. (f) they are not aware of what is right and what is wrong for them. (g), they are to suffer a lot. (h) if they were educated, they could live a healthy and pleasant life. (i) education should be ensured for all. (j) the people will be a great burden on the nation.",
+            answers: { a: ["In fact", "Actually"], b: ["But"], c: ["Moreover"], d: ["Therefore"], e: ["Besides"], f: ["Even"], g: ["As a result"], h: ["But"], i: ["So"], j: ["Otherwise"] }
+        },
+        {
+            id: 53,
+            text: "Once there lived a good number of frogs in a pond. On a rainy day, they were in a joyous mood. (a) they started playing. (b) there were only a few of them. (c) almost all the frogs joined the play. (d) the young ones were very enthusiastic. They jumped into, the air and then dived into the water. (e) some of them began to sing in a loud voice. (f) they were really wonderful to watch on. (g), some boys were passing by the pond. One of them proposed to hit the frogs with stones in order to have some fun. (h) they started throwing stones at the frogs. (i), some of the frogs got injured and some of them were killed, but the boys did not stop their cruel game. (j) they continued throwing stones at the innocent frogs.",
+            answers: { a: ["So", "Therefore"], b: ["But"], c: ["However"], d: ["Especially"], e: ["Besides", "In addition", "Moreover"], f: ["To speak the truth"], g: ["At that time"], h: ["Accordingly"], i: ["As a result"], j: ["Rather"] }
+        },
+        {
+            id: 54,
+            text: "There is a wise saying that \"A stitch in time saves nine\". (a) the value of timely action is great. (b), it saves much labour and time and (c) prevent loss. (d) if work of today is put off for tomorrow, the load of work of tomorrow will be very heavy (e) that will demand a hurried action. We know very well that hurry spoils the curry. Works done in hurry is not well done and hurry (f) does not lessen the volume of work, (g) increases it. (h) delay sometimes complicates the action. (i) it becomes impossible to do the task. (j) we should take timely and prompt actions to avoid any difficulty in doing our respective duties.",
+            answers: { a: ["In fact"], b: ["Moreover"], c: ["also"], d: ["Truly speaking"], e: ["and"], f: ["in any way"], g: ["rather"], h: ["Besides"], i: ["In that case"], j: ["Therefore"] }
+        },
+        {
+            id: 55,
+            text: "Scientists have recently reported (a) the polar ice caps are melting. This is (b) a rise in atmospheric temperatures known (c) the \"Greenhouse Effect\". According to Melvin, (d) won Nobel Prize for earlier research, the carbon dioxide is primarily responsible for temperature rise in the atmosphere. The carbon dioxide is given off (e) coal and oil are burnt. This gas accumulated in the north (f) south poles is melting (g) may (h) lead to rise in sea levels (i) could flood many areas of the world, (j) we take measures to stop the ice melting, it may take years to control the rise in sea levels.",
+            answers: { a: ["that"], b: ["due to"], c: ["as"], d: ["who"], e: ["if", "when"], f: ["as well as"], g: ["and"], h: ["eventually"], i: ["which"], j: ["Although", "Though", "If"] }
+        }
+    ];
+
+    let currentIdx = 0;
+    let isEvaluated = false;
+    let userAnswers = {};
+
+    function init() {
+        const selector = document.getElementById('questionSelect');
+        selector.innerHTML = exercises.map((ex, i) => `<option value="${i}">Question ${ex.id}</option>`).join('');
+        renderQuestion();
+        
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const modal = document.getElementById('confirmModal');
+                if (modal.style.display === 'flex') {
+                    evaluateTest();
+                } else {
+                    triggerSubmitPopup();
+                }
+            }
+        });
+    }
+
+    function renderQuestion() {
+        isEvaluated = false;
+        const container = document.getElementById('exerciseContainer');
+        const ex = exercises[currentIdx];
+        document.getElementById('questionSelect').value = currentIdx;
+
+        let processedText = ex.text;
+        const alphabet = ['a','b','c','d','e','f','g','h','i','j'];
+        
+        alphabet.forEach(letter => {
+            const pattern = new RegExp(`\\(${letter}\\)`, 'g');
+            const savedVal = userAnswers[`${currentIdx}_${letter}`] || '';
+            processedText = processedText.replace(pattern, 
+                `<span class="gap-label">(${letter})</span> <input type="text" class="connector-input" data-letter="${letter}" value="${savedVal}" oninput="saveAnswer('${letter}', this.value)">`
+            );
+        });
+
+        container.innerHTML = `<div class="passage-box">${processedText}</div><div id="scoreBox"></div>`;
+        setupInputNavigation();
+    }
+
+    function saveAnswer(letter, val) {
+        userAnswers[`${currentIdx}_${letter}`] = val;
+    }
+
+    function setupInputNavigation() {
+        const inputs = Array.from(document.querySelectorAll('.connector-input'));
+        inputs.forEach((input, index) => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+                if (e.key === 'ArrowLeft' && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+        if(inputs.length > 0) inputs[0].focus();
+    }
+
+    function navigate(step) {
+        let target = currentIdx + step;
+        if (target >= 0 && target < exercises.length) {
+            currentIdx = target;
+            renderQuestion();
+        }
+    }
+
+    function jumpToQuestion(idx) {
+        currentIdx = parseInt(idx);
+        renderQuestion();
+    }
+
+    function triggerSubmitPopup() {
+        document.getElementById('confirmModal').style.display = 'flex';
+        document.getElementById('modalConfirmBtn').focus();
+    }
+
+    function closeModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+    }
+
+    function evaluateTest() {
+        closeModal();
+        if(isEvaluated) return;
+        isEvaluated = true;
+
+        const ex = exercises[currentIdx];
+        const alphabet = ['a','b','c','d','e','f','g','h','i','j'];
+        let correctCount = 0;
+        let processedText = ex.text;
+
+        alphabet.forEach(letter => {
+            const rawUserVal = userAnswers[`${currentIdx}_${letter}`] || '';
+            const userVal = rawUserVal.trim().toLowerCase();
+            const validOptions = ex.answers[letter].map(a => a.trim().toLowerCase());
+            
+            let displayHTML = '';
+            if (validOptions.includes(userVal)) {
+                correctCount++;
+                displayHTML = `<span class="review-word word-correct">${rawUserVal}</span>`;
+            } else {
+                const incorrectSpan = userVal ? `<span class="review-word word-incorrect">${rawUserVal}</span> ` : '';
+                displayHTML = `${incorrectSpan}<span class="review-word word-actual">${ex.answers[letter].join(' / ')}</span>`;
+            }
+
+            const pattern = new RegExp(`\\(${letter}\\)`, 'g');
+            processedText = processedText.replace(pattern, `<span class="gap-label">(${letter})</span> ${displayHTML}`);
+        });
+
+        const totalPoints = correctCount * 0.5;
+        const container = document.getElementById('exerciseContainer');
+        
+        container.innerHTML = `
+            <div class="score-display">Evaluated Score: ${totalPoints.toFixed(1)} / 5.0 marks (${correctCount}/10 correct items)</div>
+            <div class="passage-box">${processedText}</div>
+        `;
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
