@@ -725,3 +725,74 @@ READING PROGRESS INDICATOR
     transform-origin:top;
 
 }
+
+/*==========================================
+PROVERB SECTION
+==========================================*/
+
+/*==========================================
+PROVERBS
+==========================================*/
+
+.proverb-section{
+
+    width:min(1200px,92%);
+    margin:60px auto 100px;
+
+}
+
+.proverb-section h2{
+
+    font-size:34px;
+    color:#1d4ed8;
+    margin-bottom:10px;
+
+}
+
+.proverb-subtitle{
+
+    color:#64748b;
+    margin-bottom:28px;
+
+}
+
+.proverb-grid{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:18px;
+
+}
+
+.proverb-card{
+
+    background:rgba(255,255,255,.55);
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.45);
+
+    border-radius:18px;
+
+    padding:18px 22px;
+
+    box-shadow:0 10px 25px rgba(37,99,235,.08);
+
+    transition:.3s;
+
+}
+
+.proverb-card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 18px 35px rgba(37,99,235,.16);
+
+}
+
+.proverb-number{
+
+    color:#2563eb;
+    font-weight:800;
+    margin-right:8px;
+
+}

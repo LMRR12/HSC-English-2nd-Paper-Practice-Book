@@ -249,3 +249,39 @@ searchBox.addEventListener("input",renderPatterns);
 createCategoryButtons();
 
 renderPatterns();
+
+// ==========================================
+// Render Proverbs
+// ==========================================
+
+const proverbContainer=document.getElementById("proverbContainer");
+
+function renderProverbs(){
+
+    if(!proverbContainer) return;
+
+    proverbContainer.innerHTML="";
+
+    proverbs.forEach(item=>{
+
+        proverbContainer.innerHTML+=`
+
+        <div class="proverb-card">
+
+            <span class="proverb-number">
+
+                ${item.id}.
+
+            </span>
+
+            ${item.proverb}
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+renderProverbs();
