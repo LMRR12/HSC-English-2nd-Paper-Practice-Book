@@ -49,18 +49,60 @@ p{
 
 .buttons{
     display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:repeat(3,1fr);
     gap:20px;
 }
 
+@media(max-width:850px){
+
+.buttons{
+    grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:650px){
+
+.buttons{
+    grid-template-columns:1fr;
+}
+
+h1{
+    font-size:1.7rem;
+}
+
+}
+
+.completing{
+    background:#8b5cf6;
+}
+
 .btn{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
     text-decoration:none;
+
     color:white;
-    padding:22px;
+
+    min-height:90px;
+
+    padding:20px;
+
     border-radius:15px;
+
     font-size:18px;
+
     font-weight:600;
+
     transition:.3s;
+
 }
 
 .btn:hover{
@@ -121,6 +163,10 @@ Connectors
 
 <a class="btn modifiers" href="Modifier/index.html">
 Modifiers
+</a>
+
+<a class="btn completing" href="Completing Sentence/index.html">
+Completing Sentence
 </a>
 
 <a class="btn rfv" href="Right Form of Verbs/index.html">

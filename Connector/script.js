@@ -36,7 +36,7 @@ function createCategoryButtons() {
         button.className = "";
 
         if(category === currentCategory){
-            button.classList.add("active-category");
+            button.classList.add("active");
         }
 
         button.innerText = category;

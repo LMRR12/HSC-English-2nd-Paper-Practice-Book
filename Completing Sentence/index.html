@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Completing Sentence | HSC English 2nd Paper Practice Book</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="background-blur blur1"></div>
+<div class="background-blur blur2"></div>
+
+<header class="hero">
+
+    <div class="hero-bg">
+
+        <span class="blob blob1"></span>
+        <span class="blob blob2"></span>
+        <span class="blob blob3"></span>
+
+    </div>
+
+    <div class="hero-content">
+
+        <h1>HSC English 2nd Paper</h1>
+
+        <h2>Completing Sentence Handbook</h2>
+
+        <p>Learn • Revise • Practice</p>
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <span class="number">70+</span>
+
+                <span class="text">Patterns</span>
+
+            </div>
+
+            <div class="stat-card">
+
+                <span class="number">15</span>
+
+                <span class="text">Categories</span>
+
+            </div>
+
+            <div class="stat-card">
+
+                <span class="number">100%</span>
+
+                <span class="text">Online</span>
+
+            </div>
+
+        </div>
+
+        <a href="../Completing Sentence/Practice/index.html" class="practice-btn">
+
+            Practice Questions →
+
+        </a>
+
+    </div>
+
+</header>
+
+<main class="container">
+
+    <div class="toolbar">
+
+        <input
+            type="text"
+            id="searchBox"
+            placeholder="Search a grammar pattern..."
+        >
+
+        <div
+            id="categoryButtons"
+            class="categories">
+        </div>
+
+    </div>
+
+    <div id="rulesContainer"></div>
+
+</main>
+
+<div class="reading-progress"></div>
+
+<script src="completingSentenceRules.js"></script>
+
+<script src="script.js"></script>
+
+<script>
+
+const progress=document.querySelector(".reading-progress");
+
+let hideTimer;
+
+function updateProgress(){
+
+    const scrollTop=window.scrollY;
+
+    const maxHeight=document.documentElement.scrollHeight-window.innerHeight;
+
+    const percent=maxHeight<=0?0:scrollTop/maxHeight;
+
+    progress.style.transform=`scaleY(${percent})`;
+    progress.style.height="100vh";
+
+}
+
+function showProgress(){
+
+    progress.style.opacity="1";
+
+    progress.style.boxShadow=`
+        0 0 10px rgba(59,130,246,.95),
+        0 0 22px rgba(59,130,246,.75),
+        0 0 40px rgba(59,130,246,.55)
+    `;
+
+    clearTimeout(hideTimer);
+
+    hideTimer=setTimeout(()=>{
+
+        progress.style.opacity=".25";
+
+        progress.style.boxShadow=`
+            0 0 6px rgba(59,130,246,.35),
+            0 0 12px rgba(59,130,246,.20)
+        `;
+
+    },1000);
+
+}
+
+window.addEventListener("scroll",()=>{
+
+    updateProgress();
+
+    showProgress();
+
+});
+
+window.addEventListener("resize",updateProgress);
+
+updateProgress();
+
+showProgress();
+
+</script>
+
+
+
+
+</body>
+
+</html>
