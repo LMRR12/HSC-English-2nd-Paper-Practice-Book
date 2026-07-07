@@ -1,292 +1,831 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Workbook Engine — 80 Sets</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success: #16a34a;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --border: #cbd5e1;
-            --highlight: #dc2626;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f1f5f9;
-            color: var(--dark);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .container {
-            max-width: 850px;
-            width: 100%;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-        }
-
-        header {
-            text-align: center;
-            border-bottom: 2px solid var(--light);
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-
-        header h1 {
-            margin: 0 0 5px 0;
-            font-size: 24px;
-            color: var(--primary);
-        }
-
-        header h2 {
-            margin: 0;
-            font-size: 14px;
-            color: #64748b;
-            font-weight: 500;
-        }
-
-        .navigation-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        select, button {
-            padding: 10px 16px;
-            font-size: 14px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        select { font-weight: 600; }
-        button { background: var(--primary); color: white; border: none; font-weight: 600; }
-        button:hover { background: var(--primary-hover); }
-        button:disabled { background: var(--border); cursor: not-allowed; }
-
-        .score-board {
-            background: var(--light);
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            text-align: center;
-            border: 1px dashed var(--border);
-        }
-
-        .passage-card {
-            line-height: 2.3;
-            font-size: 17px;
-            letter-spacing: 0.3px;
-            margin-bottom: 30px;
-            text-align: justify;
-        }
-
-        .input-gap {
-            display: inline-flex;
-            flex-direction: column;
-            vertical-align: middle;
-            margin: 0 6px;
-        }
-
-        .gap-field {
-            width: 130px;
-            padding: 4px 8px;
-            font-size: 15px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            text-align: center;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .gap-field:focus { outline: 2px solid var(--primary); }
-        .gap-label { font-size: 11px; color: #64748b; text-align: center; margin-top: 2px; font-weight: bold; }
-        .action-zone { display: flex; gap: 15px; margin-top: 20px; }
-
-        .result-view {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 8px;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            display: none;
-        }
-
-        .result-view h3 { margin-top: 0; color: var(--success); }
-        .corrected-text { line-height: 2.3; font-size: 17px; }
-        .ans-highlight { color: var(--highlight); font-weight: bold; text-decoration: underline; padding: 0 2px; }
-        .keyboard-hint { margin-top: 15px; font-size: 12px; color: #94a3b8; text-align: center; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Right Form of Verbs Practice - HSC</title>
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+.author-info {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+}
+select, button {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    cursor: pointer;
+    background: white;
+}
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    transition: background 0.2s;
+}
+button:hover {
+    background-color: #2980b9;
+}
+button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+.passage {
+    font-size: 18px;
+    text-align: justify;
+    margin-bottom: 30px;
+}
+/* Layout wrappers to cleanly position Label + Field + Clue */
+.gap-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 4px;
+    vertical-align: middle;
+}
+.gap-label {
+    font-weight: bold;
+    color: #3498db;
+}
+.blank-input {
+    width: 120px;
+    padding: 4px 8px;
+    border: 1px solid #95a5a6;
+    border-radius: 4px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    color: #2c3e50;
+}
+.blank-input:focus {
+    border-color: #3498db;
+    outline: none;
+    background-color: #fbfeff;
+}
+.clue-verb {
+    color: #7f8c8d;
+    font-style: italic;
+    font-size: 16px;
+}
+.actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+.btn-check {
+    background-color: #2ecc71;
+    font-size: 16px;
+    font-weight: bold;
+}
+.btn-check:hover {
+    background-color: #27ae60;
+}
+.score-display {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+.result-passage {
+    margin-top: 25px;
+    padding: 20px;
+    background: #fcfcfc;
+    border-left: 5px solid #3498db;
+    border-radius: 4px;
+    display: none;
+    font-size: 18px;
+}
+.correct-ans {
+    color: #27ae60;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.incorrect-ans {
+    color: #c0392b;
+    font-weight: bold;
+    text-decoration: line-through;
+}
+</style>
 </head>
 <body>
-
 <div class="container">
-    <header>
-        <h1>Practice Sheet on Right Form of Verbs</h1>
-        <h2>Prepared By Luran Meahda Ramiz Rafin</h2>
-    </header>
-
-    <div class="navigation-controls">
-        <button id="prevBtn" onclick="navigate(-1)">← Previous</button>
-        <select id="questionDropdown" onchange="jumpToQuestion(this.value)"></select>
-        <button id="nextBtn" onclick="navigate(1)">Next →</button>
-        <div class="score-board" id="scoreBoard">Score: -- / 5.0</div>
-    </div>
-
-    <div class="passage-card" id="interactivePassage"></div>
-
-    <div class="action-zone">
-        <button style="background-color: var(--success);" onclick="evaluateAnswers()">Submit & Check Answers</button>
-        <button style="background-color: #64748b;" onclick="resetCurrentAnswers()">Clear</button>
-    </div>
-
-    <div class="result-view" id="resultView">
-        <h3>Evaluation & Answer Key View</h3>
-        <p id="marksSummary"></p>
-        <div class="corrected-text" id="solutionPassage"></div>
-    </div>
-
+<h2>Practice Sheet on Right Form of Verbs - HSC</h2>
+<div class="author-info">Prepared by Luran Meahda Ramiz Rafin</div>
+<div class="controls">
+<button id="btn-prev" onclick="changeQuestion(-1)">Previous</button>
+<div>
+<label for="question-select">Jump to Question: </label>
+<select id="question-select" onchange="jumpToQuestion(this.value)"></select>
+</div>
+<button id="btn-next" onclick="changeQuestion(1)">Next</button>
+</div>
+<h3 id="question-title">Question 1 of 80</h3>
+<div id="passage-container" class="passage"></div>
+<div class="actions">
+<button class="btn-check" onclick="checkAnswers()">Check Answers</button>
+<button onclick="resetQuestion()">Reset</button>
+</div>
+<div id="score" class="score-display"></div>
+<div id="result-passage" class="result-passage"></div>
 </div>
 
-<!-- Load external database dynamically -->
-<script src="questions.js"></script>
-
 <script>
-    let currentQuestion = 1;
-    const userAnswersStorage = {}; 
+const dataset = [
+{
+id: 1,
+verbs: ["yield", "remain", "notice", "modify", "exist", "replace", "lose", "become", "change", "get"],
+text: "Change is the order of nature because we know the proverb that old order changes (a) place to the new. So, nothing (b) new forever. The same we (c) in entertainment also, Old and traditional forms are changed and (d) by new and modern forms of entertainment. Many of them (e) any longer. Today TV channels and satellite have superseded radio; similarly band and pop music (f) our popular old songs. Football (g) its appeal day by day. Cricket and other games (h) more and more popular. Our idea about the popularity of entertainment also (i). We've started looking upon our forms of all life in a new way and (j) habituated to it.",
+answers: ["yielding", "remains", "notice", "modified", "don't exist", "have replaced", "is losing", "have become", "has changed", "are getting"],
+altAnswers: {7: "are becoming"}
+},
+{
+id: 2,
+verbs: ["reign", "respect", "shine", "preach", "make", "consider", "build", "feel", "get", "stay"],
+text: "In this world, truth (a) over falsehood. Those who are always in the habit of speaking the truth (b) everywhere. But those who are involved in telling lies (c) in life. That is why we see that many great men in the history used to (d) truth among their countrymen. Being truthful is essential for our society. It holds the highest value in (e) our society better. This quality (f) to be one of the essential factors that empower us from within. A truthful man is a trusted person. And this trust (g) confidence in us. Confidence makes us (h) better. When we start (i) comfortable with speaking the truth, we will begin to prosper. So, we should try hard (j) away from the lies.",
+answers: ["reigns", "are respected", "cannot shine", "preach", "making", "is considered", "builds", "feel", "getting", "to stay"]
+},
+{
+id: 3,
+verbs: ["visit", "meet", "work", "force", "take", "know", "rob", "need", "lend", "set"],
+text: "One day in 1976, Professor Muhammad Yunus (a) a poor village near Chittagong University. He (b) a poor woman who made bamboo tools for a living. Although she (c) hard, she remained poor because she (d) to pay a high price for the bamboo. She did not have enough money to buy the bamboo and used to (e) loans from the moneylenders on an exorbitant interest. Professor Yunus (f) that he could not simply give her the money she needed because it (g) the woman of her dignity. Instead, he asked the people in the village how much money they (h) to start their own business and free themselves from poverty. He (i) the equivalent of about US$27.00 from his pocket to 42 women of the village. Those women (j) up their small business and started to earn money to support their families.",
+answers: ["visited", "met", "worked", "was forced", "take", "knew", "would rob", "needed", "lent", "set"]
+},
+{
+id: 4,
+verbs: ["come", "commit", "recollect", "be", "draw", "impress", "show", "win", "come", "cherish"],
+text: "Jerry is an orphan. He (a) to the orphanage at the age of four. He lost his parents in his infancy. Then, he (b) to the care of the orphanage. He could hardly (c) his parents' memory. In spite of (d) an orphan, he had developed a strong fabric of morality. His inimitable morality (e) him close to the writer. The writer (f) with him. She started (g) affection for him. Jerry took her as his mother. He fabricated a lie (h) her heart. The orphan boy (i) closer to her. She also loved him like her son. Once she left the place, but she (j) the memory of the boy till her old age.",
+answers: ["came", "was committed", "recollect", "being", "drew", "was impressed", "showing", "to win", "came", "cherished"]
+},
+{
+id: 5,
+verbs: ["possess", "crumble", "decay", "be", "be", "speak", "introduce", "live", "think", "be"],
+text: "Books (a) as essence of immortality. They are the most precious products of human efforts. Temples (b) into ashes. Pictures and statues (c) but books survive. Time is of no account for great thoughts which (d) as fresh today as they (e) when came through the authors' minds ages ago. What was then thought or said still (f) to us. Books (g) us to the best society. They bring us into the presence of the noblest minds that have ever (h). We hear what they (i) or said. We see them as if they (j) really alive.",
+answers: ["are possessed", "crumble", "decay", "are", "were", "speaks", "introduce", "lived", "thought", "were"]
+},
+{
+id: 6,
+verbs: ["compare", "call", "make", "hold", "lead", "remove", "change", "give", "forget", "continue"],
+text: "A teacher (a) with an architect. Teachers (b) the architects of a nation. They play an important role in order to build a nation. They are used (c) the illiterate people worthy citizens. But the teachers (d) in high respect in our country. They are habituated to (e) a humble life in the midst of want. Still they keep the light of education burning with a view to (f) the darkness of illiteracy. It is high time we (g) our outlook towards the teachers. In many developed countries, teachers (h) high respect. \"A most important truth, which we are apt (i), is that a teacher can never truly teach unless he is still learning himself. A lamp can never light another lamp unless it (j) to burn its own flame,\" Tagore said.",
+answers: ["is compared", "are called", "to making", "are not held", "leading", "removing", "changed", "are given", "to forget", "continues"]
+},
+{
+id: 7,
+verbs: ["bestow", "mould", "regard", "have", "get", "sacrifice", "ensure", "say", "rock", "rule"],
+text: "A mother is a supreme gift (a) upon us by Allah. She exercises an undeniable influence in (b) the character of a child and also in shaping their future destiny. A mother (c) as the best teacher, guide and protector. An educated mother can manage the family in a far better way than a mother who has (d) no schooling. She is more interested in (e) her children educated. She (f) her own happiness to (g) a better future for her children. So, often it (h) that the hands that (i) the cradle (j) the world.",
+answers: ["bestowed", "moulding", "is regarded", "had", "getting", "sacrifices", "ensure", "is said", "rock", "rule"]
+},
+{
+id: 8,
+verbs: ["be", "change", "root", "bear", "bear", "get started", "have", "be", "be", "relate"],
+text: "Festivals (a) common to all societies and cultures. With the change of social and economic structures, the nature of festivals also (b). But some festivals are so deeply (c) in the social organism that they continue to entertain from generation to generation. Some of the festivals (d) the mark of the community and nationality, some have the stamp of religion and again some (e) the impression of politics. The festivals, which (f) in the primitive society centering on the prayer for food (g) now been filled with various colours and varieties. The main foundation of festivals (h) ritual and most of the ancient rituals (i) collective activities. Many of the rituals were (j) to agriculture and were determined by lunar months.",
+answers: ["are", "changes", "rooted", "bear", "bear", "got started", "have", "is", "are", "related"]
+},
+{
+id: 9,
+verbs: ["meet", "not earn", "rose", "feel", "have", "not buy", "borrow", "affect", "drop", "ensure"],
+text: "In the current social and economic system of Bangladesh, everyone depends on his income in order to (a) the daily needs. However, many people of our country (b) enough to live comfortably. People of low income are to struggle a lot to buy food, clothes and medicine because prices of everything (c) high day by day. Generally, people in rural areas (d) the pressure even more as they earn less. In fact, they (e) fewer opportunities to improve their financial condition. When prices go up, many families (f) enough healthy food and this causes malnourishment of the children. Sometimes they cannot help (g) money, which leads to debt. High prices also (h) their children's education. Many a student (i) out of school as their parents cannot afford to bear their educational expenses. But for the true development of our country proper education must be (j) at any cost.",
+answers: ["meet", "do not earn", "are rising", "feel", "have", "cannot buy", "borrowing", "affect", "drops", "ensured"]
+},
+{
+id: 10,
+verbs: ["know", "stop", "know", "get", "live", "cross", "send", "live", "declare", "come"],
+text: "Once upon a time, there was a king who was very fond of (a) his future from the astrologers. A famous astrologer (b) at his capital on his way to home. The king called on him to (c) about the future and the astrologer told him something unpleasant. At this the king (d) furious and condemned him to death saying, \"Men like you (e) to spoil the peace of the world.\" But another thought (f) his mind before the astrologer (g) for execution. \"How long will you (h)?\" asked the king. With ready wit, the astrologer said, \"The stars (i) that I shall die only a week before your Majesty, so goodbye.\" Hearing this, the king turned pale like a dead man and shouted, \"Drive this wretch away, let him (j) here again.\"",
+answers: ["knowing", "stopped", "know", "got", "should not live", "had crossed", "was sent", "live", "declare", "not come"],
+altAnswers: {8: "have declared"}
+},
+{
+id: 11,
+verbs: ["satisfy", "know", "want", "know", "inspire", "undertake", "result", "lead", "be", "invent"],
+text: "Man has unquenchable thirst for knowledge. He is never (a) with what he already (b) and seen. Naturally, he (c) to know and see more and more. This curiosity for (d) more has (e) him (f) and carry out difficult and dangerous tasks which eventually (g) in epoch making discoveries and inventions and (h) him in his long and continuous journey from his helpless state of caveman to his present situations of power and progress. He (i) helpless still now. He would not have been able to control all powers and forces. (j) so many technologies he now controls almost all destructive powers and forces.",
+answers: ["satisfied", "has known", "wants", "knowing", "inspired", "to undertake", "have resulted", "led", "is", "Inventing"],
+altAnswers: {6: "resulted", 7: "have led", 8: "has been"}
+},
+{
+id: 12,
+verbs: ["be", "not know", "go", "eliminate", "not avail", "get", "to contribute", "to lie", "mean", "result"],
+text: "The life of our farmers (a) full of hardships. Many a farmer (b) how to cultivate scientifically. They work hard from dawn to dusk. But their toil (c) away due to lack of scientific knowledge. Our government offers a lot of opportunities to them with a view to (d) their sufferings. Unfortunately, they (e) themselves of those opportunities. It is time they (f) scientific education and all concerned helped them. If they were educated, they (g) better to the prosperity of the country. The prosperity of our country (h) in their proper education. Educating a farmer (i) educating a family and a nation. And, it (j) in greater success in every sector of the country.",
+answers: ["is", "does not know", "goes", "eliminating", "do not avail", "got", "could contribute", "lies", "means", "results"],
+altAnswers: {6: "would contribute"}
+},
+{
+id: 13,
+verbs: ["rely", "use", "recognize", "maintain", "be", "be", "exchange", "provide", "belong", "pay"],
+text: "We can't help (a) on English. Now, English is (b) as a common language for global communication. It (c) as an international language. English is important for (d) communication with our development partners. A good command over English as well as regular practices (e) essential for us. 80% information of all the computers (f) in English. With a view to (g) our views with the rest of the world, we have to learn English. Moreover, we (h) with the good scope of enjoying the best books through English. English is now no longer the native speaker's language. Now, it (i) to the world's people. It is high time we (j) more attention to English. Otherwise, we will lag behind.",
+answers: ["relying", "used", "is recognized", "maintaining", "is", "is", "exchanging", "should be provided", "belongs", "paid"]
+},
+{
+id: 14,
+verbs: ["admit", "be", "get", "face", "play", "deteriorate", "impress", "become", "develop", "make"],
+text: "Students get themselves (a) into universities for higher education. They acquire higher education from two streams; one is public and the other is private. The private universities (b) open to all but one has to face tough competition for (c) a seat there. The public universities are cheaper in terms of tuition fees. They offer residential and boarding facilities at subsidized rates. But public universities often (d) a number of problems. Student politics (e) a vital role in (f) the academic environment there. As a result, students face session jam. So, the conscious and moneyed persons (g) by the private universities. Since this is the age of privatisation, the private universities (h) popular day by day. Besides, it is less difficult to get a seat in a private university but here they are to pay a lot. However, the private sectors have some limitations. In fact, the two streams should (i) in a balanced way. Because, both sectors are playing important roles with a view to (j) the nation highly educated.",
+answers: ["admitted", "are", "getting", "face", "plays", "deteriorating", "are impressed", "are becoming", "be developed", "making"]
+},
+{
+id: 15,
+verbs: ["be", "form", "make", "foster", "change", "be", "keep", "have", "be", "cry"],
+text: "Relationships are of different kinds. Some (a) familial and intimate, (b) by blood and by marriage; some are social like the ones we have with friends and some (c) in school where we form close bonds with classmates and teachers. Relationship can also (d) in workplace, which may quickly (e) from professional to social. There (f) relationships also between human beings and animals, between children and their toys that they can't part with. All these relationships (g) us close to each other and provide us all kinds of support, love and affection. A person (h) no family feels the pain of loneliness and isolation. There (i) no one to laugh or (j) with him/her.",
+answers: ["are", "formed", "are made", "be fostered", "change", "are", "keep", "having", "is", "cry"]
+},
+{
+id: 16,
+verbs: ["know", "kill", "see", "to be", "hide", "fall", "unite", "devour", "decrease", "take"],
+text: "Tigers (a) as ferocious animals. But they hardly (b) any animal when they are not hungry. Usually the tigers reside in the deep forest. They are hardly (c) in the open unless there (d) a strong necessity. They often remain (e) under the deep green in search of the prey. Whenever they discern any prospective prey, they take a pose to (f) upon it. Tigers often (g) themselves to attack their prey from different directions. An adult tiger (h) 20 to 30 kilograms of meat at a single meal. In our Sundarbans, the number of tigers (i) day by day. Poaching and illegal trafficking are the main reasons of decrease. So, the concerned authority should be committed to (j) action to protect the tigers.",
+answers: ["are known", "kill", "seen", "is", "hidden", "fall", "unite", "devours", "is decreasing", "taking"]
+},
+{
+id: 17,
+verbs: ["prepare", "call", "be", "lie", "participate", "read", "face", "remove", "engage", "work"],
+text: "Student life is the best time for (a) ourselves for future. It is (b) the seed-time of life. So during this period of life, students mustn't waste time. The main pursuit of the students (c) study. They should prepare themselves for the life (d) ahead. They should also (e) in co-curricular activities. By (f) newspaper, they will know what happens in the world. When the country (g) with a natural calamity, they should come forward with a view to (h) the sufferings of the affected people. Even in normal times, they (i) themselves in acts of social service. The students cannot do well in the examination without (j) hard. It is a pity that many students are trying to succeed in the shortest and easiest way.",
+answers: ["preparing", "called", "is", "lying", "participate", "reading", "is faced", "removing", "should engage", "working"]
+},
+{
+id: 18,
+verbs: ["long", "call", "create", "know", "prove", "compete", "go", "shock", "perform", "outshine"],
+text: "Cricket is a popular game. Nowadays, people (a) to watch it to get pleasure. Cricket (b) a gentlemen's game too. A bond of friendship (c) among the playing nations. The Bangladesh National Cricket Team is popularly (d) as the Tigers; Our cricket team is very organized. It already (e) its worth in many an international match. Our cricketers are capable of (f) with the renowned cricket teams of the world. The prestige of our country already (g) up in the international arena; thanks to our cricket team. In spite of its renown, sometimes our cricket team (h) us by (i) poorly. Even after that, we believe, our cricketers (j) all other competitors in future. However, they need more vigorous practice to reach their goals.",
+answers: ["long", "is called", "is created", "known", "has proved", "competing", "has gone", "shocks", "performing", "will outshine"]
+},
+{
+id: 19,
+verbs: ["face", "be", "move", "face", "cover", "not know", "take", "try", "build", "see"],
+text: "Dhaka, the world's densest and fastest growing city (a) unbearable traffic jams. There (b) many reasons for this. The ever increasing number of vehicles and population is the main reason. During a traffic jam, people have to suffer much. They have to (c) inch by inch. They have to wait on roads hours after hours (d) unbearable sufferings. Again, the roads of Dhaka city are not spacious. Only seven percent of Dhaka city is (e) by roads, compared with around 25 percent of Paris and Vienna. If anybody falls in a traffic jam, he (f) when he will reach home. Sometimes, a distance of 1km (g) an hour to cross. Office and school goers find it very difficult to reach their destination in time. Our government (h) heart and soul to solve this problem. Flyovers (i) in different places in order to control traffic jam. Besides, traffic police and sergeants (j) filing cases against vehicles breaking road transport rules. But still it is becoming impossible to control traffic jam.",
+answers: ["faces", "can be", "move", "facing", "covered", "does not know", "can take", "is trying", "are being built", "are seen"],
+altAnswers: {0: "is facing", 1: "may be", 6: "takes", 1.1: "are"}
+},
+{
+id: 20,
+verbs: ["consider", "play", "call", "read", "acquire", "maintain", "be", "read", "live", "ask"],
+text: "Newspaper (a) the people's parliament. The newspaper (b) a vital role in modern civilization. It (c) to be the mirror of the world. We must develop the habit of (d) the newspaper daily. It helps us (e) general knowledge, which is essential for our education. Nobody (f) contact with the outside world without reading the newspaper. Mere bookish knowledge (g) not sufficient in the struggle of life. A man who (h) the newspaper daily is like a creature of the narrow well. Being ignorant of current topics, he cannot take part in the talks and discussions in an enlightened society and he (i) like a fish out of water in it. Students (j) for reading newspaper daily.",
+answers: ["is considered", "plays", "is called", "reading", "acquiring", "can maintain", "is", "does not read", "lives", "should be"],
+altAnswers: {4: "acquire", 9: "must be asked", 4.1: "to acquire", 9.1: "are asked"}
+},
+{
+id: 21,
+verbs: ["eat", "satisfy", "preserve", "eat", "happen", "eat", "select", "be", "adulterate", "select"],
+text: "While (a) food, we should bear in mind that we don't eat just to (b) hunger or to fill the belly. We eat to (c) our health. For good health, a man (d) good food. Sometimes, it so (e) that people who live even in the midst of plenty do not (f) the food they need for good health. Actually, they have no knowledge of health and nutrition. They don't know how to (g) a balanced diet from the many foods that (h) available to them. Besides, foods are being (i) in many ways nowadays. So, it is high time we (j) right kind of foods for avoiding health hazard.",
+answers: ["eating", "satisfy", "preserve", "should eat", "happens", "eat", "select", "are", "adulterated", "selected"]
+},
+{
+id: 22,
+verbs: ["live", "need", "think", "ensure", "live", "make", "call", "make", "be", "develop"],
+text: "It is natural that a man cannot (a) alone. He always (b) a company. He has to express his thought and ideas, (c) others while the others are of the same needs. He has also the need of others for (d) their safety and comfort. So, he is bound (e) with others (f) an institution and it (g) society. Society is the first organization which (h) by our primitive ancestors. They (i) the first to contribute to (j) the civilization.",
+answers: ["live", "needs", "thinking", "ensuring", "to live", "to make", "is called", "was made", "are", "developing"],
+altAnswers: {5: "making", 8: "were"}
+},
+{
+id: 23,
+verbs: ["get", "call", "entertain", "create", "play", "become", "consist", "show", "play", "become"],
+text: "Cricket is a popular game. Both the young and the old (a) pleasure from this game. In fact, cricket (b) the gentlemen's game. It (c) us with politeness and discipline. A sense of brotherhood and fraternity (d) among the playing nations through it. At present cricket is the most popular game in Bangladesh. The English (e) it here in this subcontinent and since then it (f) an integral part of our entertainment. Our team (g) of skilled players. They already (h) their performance in several matches. But it is a matter of sorrow that sometimes our players (i) so poorly that our countrymen (j) become astonished.",
+answers: ["get", "is called", "entertains", "is created", "would play", "has become", "consists", "have shown", "play", "become"],
+altAnswers: {4: "played", 5: "became", 7: "have already showed"}
+},
+{
+id: 24,
+verbs: ["stick", "quit", "wear", "play", "play", "consider", "be", "do", "meet", "feel"],
+text: "I have tried a lot of different exercises, but have never (a) with any of them. I swam for a while, but when the weather got cold, I (b). I tried jogging, but that really (c) me out. I (d) badminton for a few weeks, but I could not find anyone (e) with regularly. Then one day, I read in a magazine about a form of exercise that I did not even (f) exercise. That was plain walking! I tried it for a month, and it (g) so easy and enjoyable that I kept (h) it. While walking, I could enjoy the scenery, talk to people I (i), and come back home (j) great.",
+answers: ["stuck", "quit", "wore", "played", "playing", "consider", "was", "doing", "meet", "feeling"],
+altAnswers: {1: "quitted", 3: "had been playing", 4: "to play"}
+},
+{
+id: 25,
+verbs: ["receive", "be", "visit", "engage", "send", "deprive", "not know", "need", "neglect", "dummy"],
+text: "Would you mind (a) my letter. I am extremely sorry for (b) late. Had I had any message about your illness, I (c) you. Believe me, since my return from Australia, I have got myself (d) in raising awareness among people (e) their daughters to school. In this country, girls (f) of proper education and guidance. Due to lack of education, they (g) what they (h). For years, they (i) in society.",
+answers: ["receiving", "being", "could have visited", "engaged", "to send", "are deprived", "do not know", "need", "have been neglected", ""],
+altAnswers: {2: "might have visited", 2.1: "would have visited", 8: "are neglected"}
+},
+{
+id: 26,
+verbs: ["put", "do", "visit", "file", "inquire", "find", "give", "keep", "imprison", "set"],
+text: "A poor man was once (a) in a jail, although he (b) no wrong. After a long time, the king of the state (c) the jail and the man told him that he was innocent but a case (d) against him by some of his enemies. The king (e) privately and (f) that it was true. He (g) the man some money and set him free. He went straight to the market. In a shop there, wild birds (h) in cages for sale. He said to the shopkeeper, I wish to buy all the birds of your shop. These birds unjustly (i) and I like to (j) them free.",
+answers: ["put", "did", "visited", "was filed", "inquired", "found", "gave", "were kept", "are imprisoned", "set"]
+},
+{
+id: 27,
+verbs: ["know", "be", "take", "allow", "has", "slope", "bathe", "ply", "surf", "take"],
+text: "Kuakata, locally (a) as Sagar Kannya (b) an uncommon scenic spot of Bangladesh. Kuakata (c) its origin from the story of a 'Kua' or well-dug on the sea-shore. It (d) a visitor to watch both the sunrise and the sunset from the beach. The beach (e) a typical natural setting. This sandy beach (f) gently into the Bay and (g) there is as pleasant as is swimming or diving. Fishing boats (h) in the Bay of Bengal and (i) waves add to the vibrant colours of Kuakata. Steps (j) to preserve the beauty of the famous beach.",
+answers: ["known", "is", "takes", "allows", "has", "slopes", "bathing", "plying", "surfing", "should be taken"]
+},
+{
+id: 28,
+verbs: ["teach", "teach", "give", "get", "enlighten", "learn", "instruct", "know", "pay", "fail"],
+text: "(a) is a noble profession. A teacher (b) his students from the core of his heart. He teaches his students with a view to (c) the light of education. By (d) the light of education, students can (e) their inside. The students (f) their lessons now as their teachers (g) them. But the students now-a-days act as though they (h) everything. They are not (i) heed to their teachers advice. But the students must be careful in their studies lest they (j) to secure good marks.",
+answers: ["teaching", "teaches", "giving", "getting", "enlighten", "should learn", "instruct", "known", "paying", "should fail"]
+},
+{
+id: 29,
+verbs: ["have", "consider", "be", "have", "expect", "form", "cultivate", "not help", "destroy", "think"],
+text: "Man is a social and rational being. He (a) freedom of choice, thought and expression. But everybody should (b) that he is not the only person in a society. There (c) many persons in the society and they (d) the same right that one (e) from one's society. So, to (f) a peaceful society one should be watchful to see that other's rights are not violated. Every citizen must (g) the habit of obeying the rules and regulations of the society. Selfishness (h) the society. Rather it (i) the peace and happiness of others. So, we all (j) of the greater interest of the society.",
+answers: ["has", "consider", "are", "have", "expects", "form", "cultivate", "does not help", "destroys", "should think"]
+},
+{
+id: 30,
+verbs: ["be", "go", "climb", "hear", "sleep", "be", "do", "be", "sleep", "be"],
+text: "When I was a child I (a) afraid of the dark, and I (b) to sleep with a light on. Even then, I feared that monsters (c) in through my bedroom window. Every sound I (d) heard struck fear into me. Often, I ran away from the room and (e) on the floor at the foot of my parents' bed. Now that I (f) almost twenty, I obviously do better than what I (g) as a child. However, I (h) still scared of bedtime. I hate (i) alone; and I still keep a tiny night-light on. And before I go to bed, I double-check every door and every window to make sure that they (j) locked.",
+answers: ["was", "went", "would climb", "heard", "slept", "am", "did", "am", "sleeping", "are"]
+},
+{
+id: 31,
+verbs: ["live", "undergo", "get", "call", "be", "prescribe", "move", "get", "follow", "relieve"],
+text: "Once there (a) an idle king. He (b) not undergo physical labour. As a result, he (c) bulky and could not move from one place to another. He (d) in a doctor. The doctor (e) clever and wise. He did not (f) any medicine for the king. He asked the king to buy a club and (g) it in the air till his hands (h) moistened. The king started (i) the prescription. Thus, the king (j) of his problem.",
+answers: ["lived", "did not undergo", "got", "called", "was", "prescribe", "move", "got", "to follow", "was relieved"],
+altAnswers: {8: "following"}
+},
+{
+id: 32,
+verbs: ["appear", "be", "help", "mention", "set", "launch", "calculate", "work", "cause", "adore"],
+text: "Most often people who (a) most often and most gloriously in the pages of history (b) great conquerers and generals. Whereas, the people who really (c) civilization forward are often never (d) at all. We do not know who first (e) a broken leg or (f) a sea worthy boat or (g) the length of a year. The great men are those who (h) ceaselessly to quicken the pace of civilization. On the contrary, the condemned men are those who (i) bloodshed and violence in the world. All of us (j) the great men of the world.",
+answers: ["appear", "are", "help", "mentioned", "set", "launched", "calculated", "work", "cause", "adore"]
+},
+{
+id: 33,
+verbs: ["go", "get", "spend", "give", "need", "train", "bring", "take", "close", "be"],
+text: "If all the children of Bangladesh (a) to school, the country (b) rid of the curse of illiteracy. To boost up education, the government (c) more money. Subsidies must (d) in the education sector. Teachers (e) to (f) for good teaching. The poor students can (g) under \"Food for Education\" programme. We (h) care that no institution (i) down due to political clashes. All concerned (j) conscious about it.",
+answers: ["go", "will get", "should spend", "be given", "need", "be trained", "be brought", "must take", "will be closed", "must be"],
+altAnswers: {8: "might be closed", 9: "should be"}
+},
+{
+id: 34,
+verbs: ["happen", "rise", "take", "travel", "cause", "violate", "lessen", "cross", "climb", "control"],
+text: "Road mishap (a) in our country almost everyday. Recently it (b) to an alarming rate (c) a heavy toll of human lives. The members of a family remain anxious if someone (d) in a bus. In most cases, reckless driving (e) road accidents. The drivers are in the habit of (f) traffic rules. Road accidents can be (g) if the drivers drive their vehicles carefully. People should be conscious in this respect. While (h) the road, they should be careful. Some people travel (i) in the roof of the buses and trains. Traffic rules must be maintained strictly with a view to (j) road accidents.",
+answers: ["happens", "has-risen", "taking", "travels", "causes", "violating", "lessened", "crossing", "climbing", "controlling"]
+},
+{
+id: 35,
+verbs: ["build", "be", "make", "have", "rest", "rise", "stand", "be", "look", "lie"],
+text: "It has been over three hundred years since emperor Shah Jahan of Delhi (a) the Taj Mahal as a tomb for his wife in Agra. Architecturally, it (b) one of the most beautiful buildings in the world. The building (c) of fine white marble with inlays of coloured marble. It (d) eight sides and many open arches. It (e) on a platform or terrace of red sandstone. Four slender white towers (f) from the corners of the terrace. A large dome (g) above the centre of the building. Around this large dome there (h) four smaller domes. Just inside the outer walls, there is an open corridor from which the visitors (i) through carved marble screens into a central room. The bodies of Shah Jahan and his wife Mumtaz (j) in two graves below this room.",
+answers: ["built", "is", "is/ was made", "has", "rests", "have risen/ rise", "stands", "are", "look/ can look", "lie"]
+},
+{
+id: 36,
+verbs: ["be", "learn", "maintain", "require", "be", "wish", "write", "ignore", "put", "learn"],
+text: "English (a) the most widely used international language. It (b) to communicate with the foreigners for various purposes such as (c) co-operation, co-existence and exchanging business information. There are also certain jobs which (d) a good functional knowledge of English. The jobs of a pilot, a postman, a telephone operator, a tour guide, a mechanic, a receptionist of an international hotel, an executive of a multinational firm etc. (e) a few of them. Besides, a student (f) to go for higher studies must learn English because the books on advanced education are mostly (g) in English. So, the importance and demand of learning English in our country can, in no way, be (h). Rather, we should (i) high importance on (j) English to make room for ourselves in the competitive world.",
+answers: ["is", "is learnt", "maintaining", "require", "are", "wishing", "written", "ignored", "put", "learning"]
+},
+{
+id: 37,
+verbs: ["mean", "grow", "cause", "stop", "be", "give", "be", "save", "reserve", "be"],
+text: "Deforestation (a) making a land desert by cutting down trees indiscriminately and (b) no tree plant there. There are several (c) of deforestation. But it is also true that man (d) it if he can control his luster. There (e) alternatives to wood whatever the purpose is. Deforestation (f) birth to deadly effect. Drought, global warming, cyclone, tidal bores, windstorm, sandstorm, soil erosion etc are the ultimate outcomes of deforestation which (g) ultimately prone to perpetual desertification. Afforestation instead of deforestation (h) the country from these devastation. Forests should be (i) in every region of the country. The total forest area must not (j) less than 25% of the land area of the country.",
+answers: ["means", "growing", "causes", "can stop", "are", "gives", "are", "can save", "reserved", "be"]
+},
+{
+id: 38,
+verbs: ["be", "leave", "be", "allure", "offer", "provide", "get", "feel", "leave", "betray"],
+text: "There (a) many reasons why the talented and qualified people (b) their homeland. The first reason (c) that the developed countries (d) them by (e) the best opportunities to succeed in life. Second, the country fails (f) suitable jobs for them. Again if employed, they (g) a handsome salary as per their quality. Besides, some (h) insecurity of their life. But whatever may be the cause, nobody (i) the country. For, it is equal to his (j) of motherland.",
+answers: ["are", "leave", "is", "allure", "offering", "to provide", "do not get", "feel", "should leave", "betrayal"]
+},
+{
+id: 39,
+verbs: ["regard", "go", "achieve", "be", "require", "develop", "refine", "make", "obtain", "derive"],
+text: "Education (a) as the yardstick of development. Development and education (b) hand in hand. Therefore, no development (c) without the advancement in the field of education. Obtaining degrees (d) the only aim of education. Redefinition of education (e) to make our people realize what the real education is. Real education (f) the mentality of men. It (g) the sense of humanity. It can (h) men sensible, reasonable and optimistic. It does not mean (i) certificates. Real education (j) from books only.",
+answers: ["is regarded", "go", "can be achieved", "shouldn't be", "is required", "develops", "refines", "make", "obtaining", "cannot be derived"]
+},
+{
+id: 40,
+verbs: ["call", "get", "lose", "make", "do", "depend", "realize", "waste", "be", "follow"],
+text: "A proverb goes that time and tide wait for none. None (a) it back. A man (b) back his lost money and health but cannot get back his lost time. Time once lost (c) forever. So we (d) the best use of our time. We (e) our work in time. If we put off our work for tomorrow, we may not get time to do it at all. There are some people who waste time for nothing. They cannot prosper in life. They (f) on others. If we read the biography of the great men, we (g) it. They (h) a single moment uselessly. They (i) very industrious from their childhood. We can prosper in life only by (j) their life.",
+answers: ["can call", "can get", "is lost", "should make", "should do", "have to depend", "can realize", "did not waste", "were", "following"]
+},
+{
+id: 41,
+verbs: ["mean", "get", "seek", "migrate", "manage", "settle", "deprive", "stop", "establish", "create"],
+text: "Brain drain (a) the migration of highly educated and qualified professionals abroad. Its reasons are many. For example, when the highly qualified professionals (b) better jobs and better salaries, they (c) better jobs abroad. As a result, some highly ambitious students (d) for higher education. When they (e) better jobs, they get (f) there. Because of this, our country (g) of the better service from her brilliant sons. In order to (h) brain drain, universities with better facilities should (i) in our country. Better working scope with better payment has to (j).",
+answers: ["means", "don't get", "seek", "migrate", "can manage", "settled", "is deprived", "stop", "be established", "be created"],
+altAnswers: {3: "are migrating"}
+},
+{
+id: 42,
+verbs: ["teach", "make", "be", "treat", "praise", "commit", "realize", "behave", "interest", "set"],
+text: "An ideal teacher knows the art of (a). He (b) his lesson interesting. His methods (c) convincing and inspiring. An ideal teacher (d) his students like his own children. He (e) the good work done by them. If any of students (f) some mistakes, he is not very harsh to him. He tactfully makes the students (g) his mistakes. An ideal teacher is never angry with his students. He (h) well with all. He (i) in simple living and high thinking. He never (j) a wrong example before his students.",
+answers: ["teaching", "makes", "are", "treats", "praises", "commits", "realize", "behaves", "is interested", "sets"]
+},
+{
+id: 43,
+verbs: ["be", "acknowledge", "work", "count", "recognize", "establish", "enter", "join", "opt", "come"],
+text: "One very conspicuous change in our society (a) the presence of working women outside the home. Of course, it (b) that women have always (c) within the household but this commonly (d) as 'work'. Even their roles in agricultural societies (e) either. From the urge (f) their own identity many of them are now (g) the outside workforce. They (h) a wide range of profession. Moreover, it is not only educated women who (i) to work but women with little or no education (j) out of their cocoons to become self-reliant.",
+answers: ["is", "has to be acknowledged", "worked", "is not counted", "have not been recognized", "to establish", "entering", "are joining", "are opting", "have come"]
+},
+{
+id: 44,
+verbs: ["forgive", "give up", "suffer", "take", "be", "kill", "call", "bring", "leave", "drop"],
+text: "To err is human. If a man commits crime anytime and repents truly for his misdeed, he may (a). But the man who (b) the wrong, (c) surely. In the long run, he (d) to the land of death. The old sailor (e) a wrong-doer in his long journey. He committed a crime (f) a sea bird (g) Albatross. That crime ultimately (h) bad luck to them. The ship (i) in the icy sea. The sun shone over their head. The wind (j) down. It was a great disaster.",
+answers: ["be forgiven", "does not give up", "will suffer", "will take", "was", "killing", "called", "brought", "left", "dropped"]
+},
+{
+id: 45,
+verbs: ["take", "make", "gain", "become", "break", "witness", "destroy", "become", "bear", "hold"],
+text: "Many events of great importance (a) place during the last century. Significant advances (b) in the field of science and technology. Many European colonies (c) independence. The movement for democracy (d) prominent in many parts of the world. Two World Wars (e) out in this century. It also (f) the misuse of atomic energy. Two cities of Japan were completely (g) as a result of the dropping of atom bombs. However, the emergence of Bangladesh as an independent nation (h) a momentous event. After a bloody war of nine months, Bangladesh (i). Now we (j) our heads high in the community of nations.",
+answers: ["took", "were made", "gained", "became", "broke", "witnessed", "destroyed", "became", "was born", "can hold"]
+},
+{
+id: 46,
+verbs: ["use", "have", "require", "draw", "implement", "come", "hope", "educate", "change", "be"],
+text: "It is high time we (a) our brain about the curse of dowry. The issues of dowry (b) considered in view of country's socio-economic, cultural, political circumstances. United efforts (c) to put an end to violence against women. A specific framework must be (d) up to be (e). Anyway, we can hope that dowry (f) to an end in the time to come. We dare to (g) so because our girls are being (h) day by day. Parents' mentality (i) gradually. People (j) more conscious.",
+answers: ["used", "have to", "are required", "drawn", "implemented", "will come", "hope", "educated", "is being changed", "are being"]
+},
+{
+id: 47,
+verbs: ["fail", "be", "mean", "regard", "begin", "consider", "have", "learn", "motivate", "not write"],
+text: "There are many reasons for which many students in our country (a) in English. That English is a foreign language is the main reason. English is as if it (b) a language (c) for a particular class of people. It (d) as a sheer wastage of time. They (e) to cram English as though they (f) cramming is the only way to learn English. But (g) they been earnest in learning English, they (h) it easily. Moreover, they are not (i) properly. In addition, the text books (j) according to the need of learners.",
+answers: ["fail", "were", "meaning", "is regarded", "begin", "considered", "had", "could have learnt", "motivated", "are not written"],
+altAnswers: {2: "meant"}
+},
+{
+id: 48,
+verbs: ["live", "overlook", "earn", "keep", "write", "thank", "receive", "say", "pass", "like"],
+text: "It was twenty years ago and I (a) in Paris. I had a tiny apartment in the Latin quarters (b) a cemetery, and I (c) barely enough money (d) keep body and soul together. She had read a book of mine and (e) to me about it. I answered (f) her, and presently I (g) from her another letter (h) that she (i) through Paris and (j) to have a chat with me.",
+answers: ["was living", "overlooking", "was earning", "to keep", "wrote", "thanking", "received", "saying", "was passing", "would like"],
+altAnswers: {0: "lived", 2: "earned"}
+},
+{
+id: 49,
+verbs: ["waste", "kill", "sit", "support", "lead", "suffer", "indicate", "lead", "follow", "make"],
+text: "Idle brain is devil's workshop. If we (a) our time in idleness, all sorts of evil thoughts will crowd into our brain. Idle person who (b) their time are burden on society. They (c) idle and cherish no high ideal and lofty ambition in life. They not (d) themselves. They (e) an unhappy life and (f) in the long run. There should be time for reading, for office or other work, time for physical exercise, time for recreation and time for prayer. This (g) that we should do everything at the right moment. We (h) a healthy and prosperous life only when we (i) the routine which (j) for our guidance.",
+answers: ["waste", "kill", "sit", "do not support", "lead", "suffer", "indicates", "can lead", "follow", "is made"],
+altAnswers: {3: "cannot support", 7: "will lead", 8: "will follow"}
+},
+{
+id: 50,
+verbs: ["be", "go", "recover", "preserve", "ensure", "observe", "keep", "eat", "drink", "keep"],
+text: "\"Prevention (a) better than cure,\" (b) the old wise saying. It is extremely difficult and sometimes impossible to (c) health if it is once lost. Fresh and clean food, water and air are essential to (d) health. In order to (e) freshness and cleanliness of these things, it is necessary for us to (f) and practise certain rules of sanitation. By (g) one's teeth, finger-nails and body clean, by (h) clean food and (i) clean water and by breathing clean air, one can (j) oneself healthy.",
+answers: ["is", "goes", "recover", "preserve", "ensure", "observe", "keeping", "eating", "drinking", "keep"]
+},
+{
+id: 51,
+verbs: ["say", "give", "be", "have", "disrespect", "win", "be", "ensure", "embrace", "remove"],
+text: "Courtesy is a virtue in a man. It goes without (a) that courtesy costs nothing but (b) a lot. So you (c) courteous. That is you (d) politeness. People (e) and dislike you if you are discourteous. Nobody likes discourtesy. Try to be gentle from your student life. You (f) the heart of your enemy by (g) courteous. You (h) the removal of hatred and anger by (i) your enemy. Courtesy (j) the bitter relationship and improve mutual understanding.",
+answers: ["saying", "gives", "should be", "should have", "will disrespect", "can win", "being", "must ensure", "embracing", "will remove"]
+},
+{
+id: 52,
+verbs: ["go", "be", "reach", "stumble", "have", "find", "choose", "become", "be", "be"],
+text: "A proverb (a) that a man without an aim (b) like a ship without a rudder. Similarly, a man without an aim (c) his goal. He (d) in his way of life. So every man (e) a definite aim. But nothing is more difficult than the choice of profession. Students (f) it very difficult (g) a suitable profession. Choosing profession (h) very difficult because there (i) many paths and courses open to them. So students (j) more careful here.",
+answers: ["goes", "is", "cannot reach", "stumbles", "should have", "find", "to choose", "has become", "are", "should be"]
+},
+{
+id: 53,
+verbs: ["exercise", "mould", "take", "go", "get", "learn", "influence", "teach", "form", "grow"],
+text: "A mother (a) an undeniable influences in (b) the character of her children. The things that they learn at home (c) a firm root in them. And it (d) without saying that this learning they (e) mostly from their mother as they live under her direct supervision and constant care. This is why a child (f) the language first from its mother. The culture of the family also (g) the childrens habits and manners. So, a mother should (h) her children how to (i) the habit of good manners to (j) up in a gentle environment.",
+answers: ["exercises", "moulding", "take", "goes", "get", "learns", "influences", "teach", "form", "grow"]
+},
+{
+id: 54,
+verbs: ["become", "curb", "adulterate", "go", "take", "accumulate", "be", "hanker", "commit", "take"],
+text: "Food adulteration has (a) a subject of great concern nowadays. In spite of the government's sincere efforts, this evil practice has not (b) yet. Still the act of (c) foods is (d) on. Adulterated foods are (e) taken by people everyday. Consequently the poison is (f) in our bodies day by day and it (g) very dangerous. The businessmen who (h) after only money are (i) this heinous deed. The govt. should (j) immediate steps in this regard.",
+answers: ["become", "been curbed", "adulterating", "going", "being", "accumulating", "is", "hanker", "committing", "take"]
+},
+{
+id: 55,
+verbs: ["be", "become", "know", "be", "love", "get", "try", "present", "invite", "make"],
+text: "Children (a) very fond of festivals. They (b) very joyous on a day of festival. If it is their birthday, their joys (c) no bounds. They (d) very eager to have wishes from their beloved persons. The whole day they (e) to spend times in joy. Usually, a child on its birthday, (f) up from sleep early and (g) to remain close to their parents. On this special day, children (h) with various gifts. The children (i) their friends and relatives on this day for (j) the day joyful.",
+answers: ["are", "become", "know", "are", "love", "gets", "tries", "are presented", "invite", "making"]
+},
+{
+id: 56,
+verbs: ["read", "learn", "learn", "enrich", "be", "think", "select", "be", "commit", "learn"],
+text: "Young people often consider (a) poetry by heart a tiresome drudgery. But the (b) of poetry has great advantage over merely reading it. Poems that (c) become a permanent personal possession. The mind (d) with a store of beautiful or lofty ideas. Thoughts and ideas (e) a source of pleasure, comfort and inspiration. When the books are not at hand, we also can get pleasure (f) about them. Poems can also (g) for learning. However, these books (h) worthy. The best way of (i) a poem to memory is not to learn it line by line. Rather, to read the whole poem aloud over and over again until it (j) thoroughly.",
+answers: ["reading", "learning", "have been learnt", "is enriched", "may be", "thinking", "be selected", "should be", "committing", "is learnt"]
+},
+{
+id: 57,
+verbs: ["become", "remain", "own", "connect", "connect", "know", "come", "grow", "not monitor", "establish"],
+text: "Information Technology (a) an inseparable part of both the business and educational worlds. Despite economic slow down worldwide, information technology (b) a vital element in the world economic growth. One of the greatest things about the internet is that nobody really (c) it. It is a global collection of networks. Every computer that (d) to the internet, is a part of the network. These networks (e) together in many different ways to make the single entity. That widely (f) as the internet. In fact, that very name (g) from the idea of interconnected networks. Since its beginning in 1969, the internet (h) from four host computer systems to ten millions. However just because nobody owns it, it does not mean that it (i) and maintained in many ways. The Internet Society (j) in 1992, oversees the formation of the policies and protocols that define how we use and interact with the Internet.",
+answers: ["has become", "remains", "owns", "is connected", "are connected", "is known", "comes", "has grown", "is not monitored", "established"]
+},
+{
+id: 58,
+verbs: ["inspire", "sacrifice", "praise", "achieve", "cause", "have", "have", "not honour", "forget", "expire"],
+text: "Patriotism is a noble virtue. It (a) a man to do everything just and fair for the well-being and betterment of the country. It is the quality that impels a man (b) his own interest comfort, pleasure and even his life for the sake of his country. A patriot (c) and honoured by his countrymen. An unpatriotic man, on the other hand, is an ignoble person. He engages all his time in (d) his mean ends. He (e) harm to the country by his unyielding and reckless activities. He (f) high titles, immense wealth, high social prestige and noble birth. But in spite of (g) his worldly achievements, he remains a worthless person. His power and pelf fail to bring him any glory because, during his lifetime such a man (h) by anybody. During his lifetime, he possesses a dead soul and he remains completely (i) by the people. After his (j), his body is mixed with the vile dust from which it sprang.",
+answers: ["inspires", "to sacrifice", "is praised", "achieving", "causes", "may have", "having", "is not honoured", "forgotten", "expiring"]
+},
+{
+id: 59,
+verbs: ["go", "think", "have", "bury", "build", "see", "lead", "preserve", "call", "lock"],
+text: "The Egyptians believed that after death, they (a) to another world. In that world, they (b), people would still need many things they had on earth. Their kings (c) many wonderful treasures and these treasures were buried with them. The kings were not (d) in the open ground or in graveyards, but in great buildings or tombs called pyramids. These pyramids (e) out in the deserts. These pyramids, which can still (f) today, were made of stones. Inside there are secret doors (g) to secret passages and then to a secret chamber. There pharaohs' bodies (h) so that these would go on looking the same for thousands of years. These preserved bodies (i) mummies. The mummy and all the pharaohs treasures (j) in the secret chamber. Many of these secret chambers have been found. Some of the mummies are in the British museum in London.",
+answers: ["would go", "thought", "had", "buried", "were built", "be seen", "leading", "were preserved", "are called", "were locked"]
+},
+{
+id: 60,
+verbs: ["determine", "require", "promote", "expect", "answer", "write", "understand", "cut", "be", "secure"],
+text: "Examination plays an important role in student life. It (a) the merit of the students. A pleasant performance in the examination (b) for student to be (c) to the next class. Students (d) to be precise and accurate while (e) the questions in the examination. But the real scenario is different. Most of the students cannot (f) their examination paper fairly as they can (g) the questions properly. As a result, they (h) a very sorry figure in the examination. If they (i) correct in their answers, they certainly (j) good marks in the examination.",
+answers: ["determines", "is required", "promoted", "are expected", "answering", "write", "not understand", "cut", "were", "would secure"]
+},
+{
+id: 61,
+verbs: ["regard", "compare", "increase", "victimize", "take", "grasp", "see", "take", "develop", "punish"],
+text: "Dowry (a) as a great curse in our society. It may (b) to cancer that is (c) in our society at a great speed. The fathers of the brides (d) for dowry. If steps are not (e) against those greedy people, it (f) our society. It is mainly (g) in the rich and educated society who (h) dowry as their right. So we have to (i) morality. The culprits should (j) to control it. Otherwise it will be a society of torture and exploitation.",
+answers: ["is regarded", "be compared", "increasing", "are victimized", "taken", "will grasp", "seen", "take", "develop", "be punished"]
+},
+{
+id: 62,
+verbs: ["make", "trust", "cultivate", "speak", "tell", "gain", "achieve", "tell", "come", "expose"],
+text: "Truthfulness is one of the greatest virtues which (a) a man really great. A man (b) by others if he does not (c) the habit of (d) the truth. A man who is not (e) by anybody can (f) any position. A man can (g) his ends once or twice by (h) lies but no permanent gain (i) out of such success. It must come to light sooner or later. Then the real character of the liar gets (j) and nobody trusts him anymore.",
+answers: ["makes", "is trusted", "cultivate", "speaking", "trusted", "not gain", "achieve", "telling", "comes", "exposed"]
+},
+{
+id: 63,
+verbs: ["play", "confine", "work", "receive", "become", "have", "prove", "contribute", "be", "keep"],
+text: "Today women are (a) important roles in all spheres of life. They are no longer (b) within the four walls of their parents' or their husbands' house. They have come out of their kitchens and (c) hand in hand with man in all the development programmes of the government. By (d) higher education they are (e) pilots, doctors, engineers, teachers, administrators, etc. Their worth (f) already (g) by them. They are (h) much to the economy of the country. Now it has come to the realization of the men that true development of the country (i) never possible (j) half of the population idle.",
+answers: ["playing", "confined", "are working", "receiving", "becoming", "has", "been proved", "contributing", "is", "keeping"]
+},
+{
+id: 64,
+verbs: ["be", "memorize", "prepare", "prepare", "think", "develop", "have", "do", "claim", "help"],
+text: "Most of the students of our country (a) experts in (b) answers. They don't (c) notes themselves. They get them (d) by their tutors. Their tutors exercise their brain for the students. So, the (e) power of the students (f). They do not (g) any command over the language. They, of course, (h) well in the examination. But for this they can (i) no credit of their own. This result does not (j) them in their later life.",
+answers: ["are", "memorizing", "prepare", "prepared", "thinking", "cannot develop", "have", "do", "claim", "help"]
+},
+{
+id: 65,
+verbs: ["constitute", "deny", "bloom", "make", "keep", "be", "elevate", "impart", "come", "work"],
+text: "Women are nowadays as important as men in society. They (a) nearly half of our total population. So, there can be no (b) the fact that they too possess equal rights and duties as men do. They have noble missions to fulfill as men. If they get opportunity, their genius, powers and capacities (c) fully. No nation can (d) real progress (e) a half of its population in the dark. Without the uplift of women, the progress of the nation (f) not at all possible. Again without education women cannot (g). So, all-out education should (h) to womenfolk so that they may (i) forward and (j) hand in hand with men in all development programmes.",
+answers: ["constitute", "denying", "will bloom", "make", "keeping", "is", "be elevated", "be imparted", "come", "work"]
+},
+{
+id: 66,
+verbs: ["be", "take", "render", "be", "make", "be", "use", "bring", "be", "destroy"],
+text: "Students are the future leaders of a country. Besides (a) regular students, they can (b) part in a lot of welfare work for the development of a country. Particularly in developing countries students have to (c) a great service. Students are, no doubt, conscious citizens and it (d) their foremost duty (e) the people conscious. Student politics (f) very common in the educational institutes. Very often they go for mass meetings, chant slogans in the national interest. Since the students are very handy, the main political parties (g) them as their tools. So sometimes student politics (h) about unexpected consequences. Many students, being (i) influenced by the evil motive of the political leaders, (j) their life. They cannot fulfill their main objective.",
+answers: ["being", "take", "render", "is", "to make", "is", "use", "brings", "being", "destroy"]
+},
+{
+id: 67,
+verbs: ["trouble", "give", "have", "be", "murder", "confuse", "come", "see", "know", "wear"],
+text: "Hamlet (a) by an uncertainty about the manner of his father's death. Claudius had (b) out that a snake (c) poisoned him, but young Hamlet doubted that Claudius himself (d) the snake and had (e) him for crown. While his mind (f) by these doubts and anxieties, words (g) to him that for three nights the ghost of the dead king had (h) by soldiers on watch upon the platform before the place. The figure came always dressed in the same suit of armour that the dead king was (i) to have (j).",
+answers: ["was troubled", "given", "had", "was", "murdered", "was confused", "came", "been seen", "known", "worn"]
+},
+{
+id: 68,
+verbs: ["start", "bear", "confine", "have", "make", "be", "suppose", "speak", "allow", "receive"],
+text: "Gender discrimination (a) in Bangladesh at birth. The problem is very acute here. People are of the opinion that male children support the family. So girls (b) to an unwelcome world. However, they (c) to domestic work. This discriminatory attitude (d) some long-term negative effects. It makes them (e) that they (f) inferior to male members of the family. They are not (g) to raise their voices when they (h). They are not (i) to go out of their house without (j) the permission of male members. All these things shape their thinking about life.",
+answers: ["starts", "are born", "are confined", "has", "understand", "are", "supposed", "speak", "allowed", "receiving"]
+},
+{
+id: 69,
+verbs: ["stay", "welcome", "offer", "make", "arrange", "come", "wait", "conquer", "chain", "be"],
+text: "Time is compared to a gypsy who (a) anywhere for long. The poet (b) time to be his guest for a day. He (c) time many valuable gifts and honor. He offers bells (d) of the best silver for his horse and a golden ring for himself. He will (e) a peacock dance in honor of time. But time is a thing that never stays. The greatest tragedy is that it never (f) back. It never (g). Man has been able to (h) the world but he (i) by the time. He (j) nothing but the puppet to the power of time.",
+answers: ["does not stay", "welcomes", "offers", "made", "arrange", "comes", "waits", "conquer", "is chained", "is"]
+},
+{
+id: 70,
+verbs: ["depend", "judge", "base", "judge", "praise", "have", "discover", "read", "understand", "pass"],
+text: "The greatness of a book (a) mainly on the acceptability among the readers. If we read a book only once, we (b) many things in it. But (c) on one reading, we cannot (d) the standard of a book. When a book (e) highly, we (f) no doubt about the greatness of the book. Only through the first reading we may not (g) a book but if it is (h) more than once we (i) why it was read and praised. So, the great books are those that have (j) the test of time.",
+answers: ["depends", "see", "basing", "judge", "is praised", "have", "discover", "read", "understand", "passed"]
+},
+{
+id: 71,
+verbs: ["be", "know", "read", "read", "gain", "combine", "contradict", "attain", "ponder", "contain"],
+text: "Studies (a) part and parcel of human lives. But the reader (b) what sorts of books, why and how he (c). We should not (d) the books merely to be able to (g) with others or (h) material prosperity. We all should read books with a view to (i) over what we read and judge the value what the book (j).",
+answers: ["are", "doesn't know", "will / should read", "read", "gain", "combine", "contradict", "attain", "pondering", "contains"]
+},
+{
+id: 72,
+verbs: ["paralyze", "take", "earn", "groan", "gallop", "learn", "control", "come", "report", "involve"],
+text: "Price of essentials is such a crucial factor that it directly (a) the life and living of the majority people. The measures so far (b) by the government (c) appreciation from the people. But it is being replaced by despair as the majority of the people have been (d) under the crushing burden of (e) prices. It is (f) that the business syndicate (g) market prices. The retailers do not (h) out of their evil mechanism. Moreover, the police are (i) to have been (j) in illegal extortion which adds to the rising prices.",
+answers: ["paralyzes", "taken", "have earned", "groaning", "galloping", "learnt", "control", "come", "reported", "involved"]
+},
+{
+id: 73,
+verbs: ["get", "die", "be", "undergo", "provide", "increase", "predict", "rose", "raise", "flood"],
+text: "The world (a) warmer because of pollution. Every year millions of people all over the world (b) unnecessarily as a result of pollution. In the recent years there (c) alarming reports that the world's climate (d) a significant change. All these reports (e) strong evidence that world temperatures (f) day by day. Climatologists (g) that mid way through the next century temperatures may have (h) as much as 4°C. This could (i) sea levels and thereby (j) coastal areas and farm lands.",
+answers: ["is getting", "die", "have been", "is undergoing", "provide", "are increasing", "predict", "risen", "raise", "flood"]
+},
+{
+id: 74,
+verbs: ["be", "reach", "participate", "be", "be", "enrich", "promote", "provide", "say", "mobilize"],
+text: "Human life (a) not static but dynamic. A man (b) the highest peak of success if he (c) in extra-curricular activities. Travelling (d) also an important part of extra-curricular activities. It (e) travelling which (f) our knowledge and (g) our attitudes. Therefore, travelling (h) knowledge and practical experience. It can be clearly (i) that our knowledge can be (j) by travelling the different corners of the vast globe.",
+answers: ["is", "can reach", "participates", "is", "is", "enriches", "promotes", "provides", "said", "mobilized"]
+},
+{
+id: 75,
+verbs: ["require", "draw", "be", "adulterate", "sell", "direct", "look", "catch", "use", "disappear"],
+text: "Food (a) for the survival of every living being on earth. But the food we eat today is hardly safe for us. The issue of food adulteration (b) the attention of general public at present. There (c) hardly any food in our country that is not (d) in most of the hotels. Standard foods are not (e) in most of the hotels. Very recently government (f) the mobile court (g) into the horrible pictures of adulteration. They (h) dishonest hoteliers red handed for (i) unhygienic food ingredients. Government alone cannot solve this problem. If the common people work with government, this inhuman activity will (j) from our society soon.",
+answers: ["is required", "is drawing", "is", "adulterated", "sold", "have directed/ directed", "to look", "have caught/ caught", "using", "disappear"]
+},
+{
+id: 76,
+verbs: ["consider", "regard", "increase", "function", "continue", "develop", "need", "ensure", "understand", "lag"],
+text: "At present, Bangladesh (a) an emerging progressive country. It is no longer (b) as a poor country. Our per capita income (c) day by day. All the economic variables (d) very well. If we want (e) the economic flow, our internal management should (f). Political stability in this connection (g). With a view to (h) our onward march, foreign investment is very crucial. It is high time, we (i) the fact. For building a prosperous Bangladesh, wholehearted efforts are the demand of present time lest we (j) behind.",
+answers: ["is considered", "regarded", "is increasing", "are functioning", "to continue", "be developed", "is needed", "ensuring", "understood", "should lag"]
+},
+{
+id: 77,
+verbs: ["acquire", "gain", "be", "finish", "develop", "have", "depend", "discover", "invent", "make"],
+text: "(a) knowledge is not limited to any age or time. It can (b) by any person all through the life. It (c) like unlimited wealth which can never (d). However, the level of a person's knowledge (e) with his dedication, patience and continuity. A person can (f) some new knowledge through regular observation and experimentation. The progress of human beings largely (g) on the growth of knowledge in various fields in positive and constructive ways. For example, Newton (h) a theory of gravitation and there are many famous scientists who (i) amazing things (j) life easy on the earth.",
+answers: ["Acquiring/To acquire", "be gained", "is", "be finished", "develops/is developed/can be developed/may be developed", "have/should have", "depends", "discovered", "invented/have invented", "to make/making"]
+},
+{
+id: 78,
+verbs: ["be", "endow", "cross", "start", "surround", "consider", "go", "be", "untouch", "unexplore"],
+text: "Rangamati (a) one of the ideal places for holiday makers. It is a district (b) with a lot of natural and scenic beauties. As soon as a traveller (c) the outskirts of Chattogram district and (d) towards the north of the city, s/he (e) by a number of lush green hills. Rangamati (f) a major holiday destination for visitors from home and abroad. People usually (g) to Chattogram, Cox's Bazar and other places in Bangladesh but Rangamati (h) still almost (i) and (j).",
+answers: ["is", "endowed", "crosses", "starts", "is surrounded", "is considered", "go", "is", "untouched", "unexplored"]
+},
+{
+id: 79,
+verbs: ["be", "develop", "bring", "initiate", "ensure", "become", "help", "form", "show", "find"],
+text: "Friendship (a) a divine thing. A kind of heartiest relationship (b) between human beings. It is a blessing for us. It (c) happiness, peace and harmony among us. It (d) helpfulness, gratitude and peaceful atmosphere in our life. It can (e) in many ways. When a person (f) intimate with another person, he (g) him in his need. Thus a good friendship (h). A pure relationship (i) a pure friendship between two persons. Nowadays, true friendship rarely (j).",
+answers: ["is", "develops", "brings", "initiates", "be ensured", "becomes", "helps", "is formed", "shows", "is found"]
+},
+{
+id: 80,
+verbs: ["regard", "anticipate", "call", "praise", "enhance", "be", "bring", "be", "concern", "make"],
+text: "Chaucer (a) as the father of English poetry and the first of the great moderns. Chaucer (b) the modern taste and the modern mind. Chaucer may (c) the morning star of the Renaissance. He is the greatest English story-teller in verse. He (d) for his technical skill. He was the poet who first beautified and (e) the English language. He (f) the first founder of English language. He is the first English writer (g) the atmosphere of romantic interest about the men and women and the daily work of one's own world, which (h) the aim of nearly all-modern literature. He was essentially a dramatic poet. Like Shakespeare, he (i) with men and women, their passions and opinions, the thoughts and ideas, which (j) them act as they did.",
+answers: ["is regarded", "anticipated", "be called", "is praised", "enhanced", "was", "bringing", "was", "was concerned", "made"]
+}
+];
 
-    function init() {
-        const dropdown = document.getElementById('questionDropdown');
-        for (let i = 1; i <= 80; i++) {
-            let opt = document.createElement('option');
-            opt.value = i;
-            opt.textContent = `Question Set ${i}`;
-            dropdown.appendChild(opt);
-        }
-        loadQuestion(currentQuestion);
-        setupGlobalKeyboardNav();
-    }
+let currentIndex = 0;
 
-    function loadQuestion(num) {
-        currentQuestion = num;
-        document.getElementById('questionDropdown').value = num;
-        document.getElementById('prevBtn').disabled = (num === 1);
-        document.getElementById('nextBtn').disabled = (num === 80);
-        document.getElementById('resultView').style.display = 'none';
-        document.getElementById('scoreBoard').textContent = "Score: -- / 5.0";
+// Setup dropdown options instantly
+const selectEl = document.getElementById('question-select');
+dataset.forEach((q, idx) => {
+    let opt = document.createElement('option');
+    opt.value = idx;
+    opt.innerHTML = `Question ${q.id}`;
+    selectEl.appendChild(opt);
+});
 
-        let rawText = passagesData[num] || passagesData.defaultText(num);
-        let computedHTML = rawText;
-        const labels = ['a','b','c','d','e','f','g','h','i','j'];
-        
-        labels.forEach((label, idx) => {
-            const regex = new RegExp(`\\[${label}\\]\\s*\\(([^)]+)\\)`);
-            const savedValue = (userAnswersStorage[currentQuestion] && userAnswersStorage[currentQuestion][idx]) ? userAnswersStorage[currentQuestion][idx] : '';
+function renderQuestion(index) {
+    currentIndex = index;
+    document.getElementById('question-select').value = index;
+    document.getElementById('question-title').innerText = `Question ${dataset[index].id} of ${dataset.length}`;
+    
+    // Clear alerts
+    document.getElementById('score').innerText = "";
+    const resDiv = document.getElementById('result-passage');
+    resDiv.style.display = 'none';
+    resDiv.innerHTML = "";
+    
+    // Setup Navigation Button Status
+    document.getElementById('btn-prev').disabled = (index === 0);
+    document.getElementById('btn-next').disabled = (index === dataset.length - 1);
+
+    const q = dataset[index];
+    const container = document.getElementById('passage-container');
+    container.innerHTML = '';
+    
+    // Split the text structure safely by tags: (a) through (j)
+    const parts = q.text.split(/(\([a-j]\))/);
+    let blankCounter = 0;
+    
+    parts.forEach(part => {
+        if (/^\([a-j]\)$/.test(part)) {
+            const letter = part.substring(1, 2); 
+            const verbClue = q.verbs[blankCounter] || ""; 
             
-            let replacer = `
-                <span class="input-gap">
-                    <input type="text" class="gap-field" data-index="${idx}" id="gap-${label}" value="${savedValue}" autocomplete="off">
-                    <span class="gap-label">(${label}) $1</span>
-                </span>
-            `;
-            computedHTML = computedHTML.replace(regex, replacer);
-        });
+            // Build the clean structured component node layout
+            const wrapper = document.createElement('span');
+            wrapper.className = 'gap-wrapper';
+            
+            const label = document.createElement('span');
+            label.className = 'gap-label';
+            label.textContent = `(${letter})`;
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'blank-input';
+            input.id = `blank-${blankCounter}`;
+            input.dataset.index = blankCounter;
+            
+            const clue = document.createElement('span');
+            clue.className = 'clue-verb';
+            clue.textContent = `(${verbClue})`;
+            
+            wrapper.appendChild(label);
+            wrapper.appendChild(input);
+            wrapper.appendChild(clue);
+            
+            container.appendChild(wrapper);
+            blankCounter++;
+        } else {
+            container.appendChild(document.createTextNode(part));
+        }
+    });
+    
+    setupInputNavigation();
+}
 
-        document.getElementById('interactivePassage').innerHTML = computedHTML;
-        saveInputsStateTracker();
-    }
-
-    function saveInputsStateTracker() {
-        const fields = document.querySelectorAll('.gap-field');
-        fields.forEach(field => {
-            field.addEventListener('input', () => {
-                if (!userAnswersStorage[currentQuestion]) userAnswersStorage[currentQuestion] = {};
-                userAnswersStorage[currentQuestion][field.dataset.index] = field.value.trim();
-            });
-        });
-    }
-
-    function setupGlobalKeyboardNav() {
-        document.addEventListener('keydown', function(e) {
-            if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-                const active = document.activeElement;
-                if (active && active.classList.contains('gap-field')) {
-                    let currentIdx = parseInt(active.dataset.index);
-                    let targetIdx = (e.key === "ArrowRight") ? currentIdx + 1 : currentIdx - 1;
-                    let targetInput = document.querySelector(`.gap-field[data-index="${targetIdx}"]`);
-                    if (targetInput) {
-                        e.preventDefault();
-                        targetInput.focus();
-                        targetInput.select();
-                    }
-                }
+function setupInputNavigation() {
+    const inputs = document.querySelectorAll('.blank-input');
+    inputs.forEach(input => {
+        input.addEventListener('keydown', function(e) {
+            let currentIdx = parseInt(this.getAttribute('data-index'));
+            if (e.key === 'ArrowRight') {
+                let nextInput = document.getElementById(`blank-${currentIdx + 1}`);
+                if (nextInput) nextInput.focus();
+            } else if (e.key === 'ArrowLeft') {
+                let prevInput = document.getElementById(`blank-${currentIdx - 1}`);
+                if (prevInput) prevInput.focus();
             }
         });
-    }
+    });
+}
 
-    function navigate(direction) {
-        let target = currentQuestion + direction;
-        if (target >= 1 && target <= 80) jumpToQuestion(target);
+function changeQuestion(step) {
+    let target = currentIndex + step;
+    if (target >= 0 && target < dataset.length) {
+        renderQuestion(target);
     }
+}
 
-    function jumpToQuestion(num) {
-        loadQuestion(parseInt(num));
-    }
+function jumpToQuestion(index) {
+    renderQuestion(parseInt(index));
+}
 
-    function resetCurrentAnswers() {
-        userAnswersStorage[currentQuestion] = {};
-        loadQuestion(currentQuestion);
-    }
+function resetQuestion() {
+    renderQuestion(currentIndex);
+}
 
-    function evaluateAnswers() {
-        const answers = officialAnswers[currentQuestion];
-        if(!answers) return alert("Answer spectrum key missing for this specific block.");
-        let correctCount = 0;
-        
-        for (let i = 0; i < 10; i++) {
-            let val = (userAnswersStorage[currentQuestion] && userAnswersStorage[currentQuestion][i]) ? userAnswersStorage[currentQuestion][i].toLowerCase() : "";
-            let correctAlts = answers[i].toLowerCase().split('/');
+function checkAnswers() {
+    const q = dataset[currentIndex];
+    let correctCount = 0;
+    let totalBlanks = 10;
+    
+    const resDiv = document.getElementById('result-passage');
+    resDiv.innerHTML = '<strong>Full Passage Context:</strong><br><br>';
+    
+    const parts = q.text.split(/(\([a-j]\))/);
+    let blankCounter = 0;
+    
+    parts.forEach(part => {
+        if (/^\([a-j]\)$/.test(part)) {
+            let userInput = document.getElementById(`blank-${blankCounter}`).value.trim().toLowerCase();
+            let primaryAns = q.answers[blankCounter].toLowerCase();
             
-            if (correctAlts.some(alt => alt.trim() === val)) {
+            let validAnswers = primaryAns.split('/').map(s => s.trim());
+            
+            if (q.altAnswers && q.altAnswers[blankCounter]) {
+                validAnswers.push(q.altAnswers[blankCounter].toLowerCase());
+            }
+            if (q.altAnswers && q.altAnswers[blankCounter + '.1']) {
+                validAnswers.push(q.altAnswers[blankCounter + '.1'].toLowerCase());
+            }
+            
+            let isCorrect = validAnswers.some(ans => userInput === ans);
+            
+            if (isCorrect) {
                 correctCount++;
+                const correctSpan = document.createElement('span');
+                correctSpan.className = 'correct-ans';
+                correctSpan.textContent = ` ${q.answers[blankCounter]} `;
+                resDiv.appendChild(correctSpan);
+            } else {
+                let studentDisplay = userInput ? userInput : "";
+                
+                const wrongSpan = document.createElement('span');
+                wrongSpan.className = 'incorrect-ans';
+                wrongSpan.textContent = ` ${studentDisplay} `;
+                
+                const rightSpan = document.createElement('span');
+                rightSpan.className = 'correct-ans';
+                rightSpan.textContent = ` (${q.answers[blankCounter]}) `;
+                
+                resDiv.appendChild(wrongSpan);
+                resDiv.appendChild(rightSpan);
             }
+            blankCounter++;
+        } else {
+            resDiv.appendChild(document.createTextNode(part));
         }
+    });
+    
+    let totalMarks = correctCount * 0.5;
+    document.getElementById('score').innerHTML = `Evaluated Mark: ${totalMarks.toFixed(1)} / ${(totalBlanks * 0.5).toFixed(1)} (Correct: ${correctCount}/${totalBlanks})`;
+    resDiv.style.display = 'block';
+}
 
-        let marks = correctCount * 0.5;
-        document.getElementById('scoreBoard').textContent = `Score: ${marks.toFixed(1)} / 5.0`;
-        
-        let rawText = passagesData[currentQuestion] || passagesData.defaultText(currentQuestion);
-        let labels = ['a','b','c','d','e','f','g','h','i','j'];
-        
-        labels.forEach((label, idx) => {
-            const regex = new RegExp(`\\[${label}\\]\\s*\\(([^)]+)\\)`);
-            let finalAnsText = answers[idx];
-            computedHTML = rawText.replace(regex, `<span class="ans-highlight">${finalAnsText}</span>`);
-            rawText = computedHTML;
-        });
-
-        document.getElementById('marksSummary').innerHTML = `You answered <b>${correctCount} out of 10</b> correctly. Score achieved: <b>${marks.toFixed(1)} / 5.0</b>`;
-        document.getElementById('solutionPassage').innerHTML = rawText;
-        document.getElementById('resultView').style.display = 'block';
-        document.getElementById('resultView').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    window.onload = init;
+// Kick off initialization
+renderQuestion(0);
 </script>
 </body>
 </html>
